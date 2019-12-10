@@ -12,7 +12,6 @@ import { deleteCommandMessages } from '../../components/Utils';
 import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { Role, RichEmbed } from 'discord.js';
 import moment from 'moment';
-import { ENGINE_METHOD_DIGESTS } from 'constants';
 
 export default class ServerInfoCommand extends Command {
     public constructor(client: CommandoClient) {

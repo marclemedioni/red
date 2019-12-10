@@ -1,5 +1,6 @@
 import commando from 'discord.js-commando';
 import path from 'path';
+import { NodeJsonDbProvider } from './components/SettingProvider';
 import dotenvSafe from 'dotenv-safe';
 
 dotenvSafe.config();
@@ -7,6 +8,10 @@ dotenvSafe.config();
 const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(',')
 });
+
+client.setProvider(
+  new NodeJsonDbProvider()
+).catch(console.error);
 
 client
   .on('error', console.error)
@@ -54,6 +59,7 @@ client.registry
 
   .registerGroups([
     ['info', 'Info - Discord info'],
+    ['moderation', 'Moderation - Who\'s your dady ?'],
   ])
 
   // Registers all of your commands in the ./commands/ directory
