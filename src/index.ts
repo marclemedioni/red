@@ -2,12 +2,15 @@ import commando from 'discord.js-commando';
 import path from 'path';
 import { NodeJsonDbProvider } from './components/SettingProvider';
 import dotenvSafe from 'dotenv-safe';
+//import { Idler } from './idler/idler';
 
 dotenvSafe.config();
 
 const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(','),
 });
+
+//const idler = new Idler(client);
 
 client.setProvider(
   new NodeJsonDbProvider()
