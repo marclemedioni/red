@@ -1,7 +1,8 @@
-import { INFO_EMBED_COLOR } from '../../components/Constants';
-import { deleteCommandMessages } from '../../components/Utils';
+import { DEFAULT_EMBED_COLOR } from '../../components/Constants';
+import { deleteCommandMessages, shouldHavePermission } from '../../components/Utils';
 import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { RichEmbed, TextChannel } from 'discord.js';
+import { KeyObject } from 'crypto';
 
 
 export default class SuggestionModeratorCommand extends Command {
@@ -14,9 +15,11 @@ export default class SuggestionModeratorCommand extends Command {
             description: 'Add Suggestion for Discord Server',
             examples: ['<prefix>suggestion Add new channel for comments'],
             guildOnly: true,
-            //args: [{key: 'description', type: 'string', prompt:'string'}],
+            args: [{key: 'description', type: 'string', prompt:'string'}],
         });
     }
+
+    
 
     private async  verif(msg: CommandMessage) {
         const channel = msg.guild.channels.find('name', 'suggestion');
@@ -30,17 +33,25 @@ export default class SuggestionModeratorCommand extends Command {
         return channel;
 
     }
-
-
+    @shouldHavePermission('MANAGE_MESSAGES', true)
 
     public async run(msg: CommandMessage, { description }) {
         const channel = await this.verif(msg);
         const chan = msg.guild.channels.get(channel.id) as TextChannel;
-        chan!.send('fffff')
-        console.log(channel)
+        const serverEmbed = new RichEmbed();
 
+        serverEmbed
+            .setColor(DEFAULT_EMBED_COLOR)
+            .setAuthor(msg.author.username, msg.author.avatarURL)
+            .setDescription(description)
+            .setTimestamp()
+        
 
-        //console.log(chan)
-        return msg.say(channel.id);
+        var message = await chan!.sendEmbed(serverEmbed);
+        message.react('✅');
+        message.react('❌');
+    
+        deleteCommandMessages(msg, this.client);
+        return msg.channel.send("✅  Suggestion has been Added");;
     }
 }
