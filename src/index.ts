@@ -55,7 +55,8 @@ client.registry
 
   .registerGroups([
     ['info', 'Info - Discord info'],
-    ['search', 'Search - Information']
+    ['search', 'Search - Information'],
+    ['moderator', 'Moderator - Commande for discord Server']
   ])
 
   // Registers all of your commands in the ./commands/ directory

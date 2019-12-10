@@ -13,7 +13,7 @@ import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { RichEmbed } from 'discord.js';
 import axios from "axios";
 
-export default class ServerInfoCommand extends Command {
+export default class AnimesSearchCommand extends Command {
     public constructor(client: CommandoClient) {
         super(client, {
             name: 'animes',
