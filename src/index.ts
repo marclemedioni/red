@@ -7,7 +7,6 @@ dotenvSafe.config();
 
 const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(','),
-  commandPrefix: '$'
 });
 
 client.setProvider(

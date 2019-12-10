@@ -4,8 +4,8 @@
   "description": "Discord bot",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "tsc-watch --onSuccess \"node ./dist\" --compiler \"typescript/bin/tsc\"",
+    "build": "rimraf dist && tsc",
+    "start": "rimraf dist && tsc-watch --onSuccess \"node ./dist\" --compiler \"typescript/bin/tsc\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/dotenv-safe": "^8.1.0",
     "@types/node": "^12.12.15",
+    "rimraf": "^3.0.0",
     "tsc-watch": "^4.0.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.3"
