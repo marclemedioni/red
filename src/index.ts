@@ -6,7 +6,8 @@ import dotenvSafe from 'dotenv-safe';
 dotenvSafe.config();
 
 const client = new commando.CommandoClient({
-  owner: process.env!.ownerId!.split(',')
+  owner: process.env!.ownerId!.split(','),
+  commandPrefix: '$'
 });
 
 client.setProvider(
@@ -60,6 +61,7 @@ client.registry
   .registerGroups([
     ['info', 'Info - Discord info'],
     ['moderation', 'Moderation - Who\'s your dady ?'],
+    ['search', 'Search - Information'],
   ])
 
   // Registers all of your commands in the ./commands/ directory
