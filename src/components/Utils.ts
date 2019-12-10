@@ -1,5 +1,7 @@
 import { CommandoClient, CommandMessage, util as CommandoUtil } from 'discord.js-commando';
-import { TextChannel, RichEmbed, PermissionString } from 'discord.js';
+import { TextChannel, RichEmbed, PermissionString, Util, GuildMember, StreamDispatcher } from 'discord.js';
+import { oneLineTrim } from 'common-tags';
+import { YoutubeVideoType } from 'RedTypes';
 
 /** Helper function to delete command messages */
 export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClient) => {
@@ -82,5 +84,78 @@ export const onBlock = (message, reason, data) => {
         }
         default:
             return null;
+    }
+}
+
+/** Helper function to properly round up or down a number */
+export const roundNumber = (num: number, scale = 0) => {
+    if (!num.toString().includes('e')) {
+        return Number(`${Math.round(Number(`${num}e+${scale}`))}e-${scale}`);
+    }
+    const arr = `${num}`.split('e');
+    let sig = '';
+
+    if (Number(arr[1]) + scale > 0) {
+        sig = '+';
+    }
+
+    return Number(`${Math.round(Number(`${Number(arr[0])}e${sig}${Number(arr[1]) + scale}`))}e-${scale}`);
+};
+
+/** Song class used in music commands to track the song data */
+export class Song {
+    public name: string;
+    public id: string;
+    public length: number;
+    public member: GuildMember;
+    public dispatcher: StreamDispatcher | null;
+    public playing: boolean;
+
+    public constructor(video: YoutubeVideoType, member: GuildMember) {
+        this.name = Util.escapeMarkdown(video.title);
+        this.id = video.id;
+        this.length = video.durationSeconds;
+        this.member = member;
+        this.dispatcher = null;
+        this.playing = false;
+    }
+
+    public get url() {
+        return `https://www.youtube.com/watch?v=${this.id}`;
+    }
+
+    public get thumbnail() {
+        return `https://img.youtube.com/vi/${this.id}/mqdefault.jpg`;
+    }
+
+    public get username() {
+        return Util.escapeMarkdown(`${this.member.user.tag} (${this.member.user.id})`);
+    }
+
+    public get avatar() {
+        return `${this.member.user.displayAvatarURL}`;
+    }
+
+    public get lengthString() {
+        return Song.timeString(this.length);
+    }
+
+    public static timeString(seconds: number, forceHours = false) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+
+        return oneLineTrim`
+       ${forceHours || hours >= 1 ? `${hours}:` : ''}
+       ${hours >= 1 ? `0${minutes}`.slice(-2) : minutes}:
+       ${`0${Math.floor(seconds % 60)}`.slice(-2)}
+      `;
+    }
+
+    public timeLeft(currentTime: number) {
+        return Song.timeString(this.length - currentTime);
+    }
+
+    public toString() {
+        return `${this.name} (${this.lengthString})`;
     }
 }

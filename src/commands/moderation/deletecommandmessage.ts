@@ -1,5 +1,5 @@
 /**
- * @file Moderation DeleteCommandMessagesCommand - Configure whether Ribbon should delete command messages
+ * @file Moderation DeleteCommandMessagesCommand - Configure whether Red should delete command messages
  *
  * **Aliases**: `dcm`
  * @module
@@ -26,7 +26,7 @@ export default class DeleteCommandMessagesCommand extends Command {
             group: 'moderation',
             memberName: 'deletecommandmessages',
             description:
-                'Configure whether Ribbon should delete command messages',
+                'Configure whether Red should delete command messages',
             format: 'boolean',
             examples: ['deletecommandmessages enable'],
             guildOnly: true,

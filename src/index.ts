@@ -63,6 +63,7 @@ client.registry
   .registerGroups([
     ['info', 'Info - Discord info'],
     ['moderation', 'Moderation - Who\'s your dady ?'],
+    ['music', 'Music - 🎵 Let\'s dance ! 🎵'],
     ['search', 'Search - Information'],
   ])
 
