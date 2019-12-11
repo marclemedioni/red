@@ -1,28 +1,24 @@
 import { CommandoClient } from "discord.js-commando";
-import { Guild } from "discord.js";
-import { IGame, IPlayer, IGameData } from "./zombies";
+import { Guild, TextChannel } from "discord.js";
+import { IGame, IPlayer, IGameData, IMap } from "./zombies";
 import { infoLog } from './logger';
+import { Map } from './Map';
 
 const DISCORD_CATEGORY_CHANNEL_NAME = 'zombies';
 const DISCORD_CITY_CHANNEL_NAME = 'village';
+const MAP_SIZE = 10;
 
 export class ZombiesGame implements IGame {
     guild: Guild;
     client: CommandoClient;
     players: IPlayer[];
+    map: IMap;
 
     constructor(client: CommandoClient, guild: Guild, gameData: IGameData | null, players: [] | null) {
         this.client = client;
         this.guild = guild;
 
-        this.manageGuildChannels();
-        if (gameData) {
-            this.loadGame(gameData);
-        }
-        if (players) {
-            this.initGame(players);
-        }
-        this.start();
+        this.run(gameData, players);
 
         // client.on('ready', () => {
         //     client.guilds.forEach(guild => {
@@ -42,6 +38,17 @@ export class ZombiesGame implements IGame {
         // });
     }
 
+    async run(gameData: IGameData | null, players: [] | null) {
+        await this.manageGuildChannels();
+        if (gameData) {
+            await this.loadGame(gameData);
+        }
+        if (players) {
+            await this.initGame(players);
+        }
+        await this.start();
+    }
+
     loadGame(gameData) {
         console.log(`Loading game for ${this.guild.name}`);
         infoLog.info(`Loading game for ${this.guild.name}`);
@@ -49,10 +56,16 @@ export class ZombiesGame implements IGame {
         this.players = gameData.players
     }
 
-    initGame(players) {
+    async initGame(players) {
         this.client.provider.set(this.guild, 'zombies', {
             players: players
-        })
+        });
+
+        this.map = new Map(null, MAP_SIZE);
+        const cityChannel = await this.guild.channels.find(channel => channel.name === DISCORD_CITY_CHANNEL_NAME && channel.type === 'text' && channel.parent && channel.parent.name === DISCORD_CATEGORY_CHANNEL_NAME) as TextChannel;
+        console.log(cityChannel)
+        console.log(this.map.toString())
+        await cityChannel.send(this.map.toString())
     }
 
     async manageGuildChannels() {
