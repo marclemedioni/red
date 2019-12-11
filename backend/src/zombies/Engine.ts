@@ -29,7 +29,7 @@ export class ZombiesEngine {
         this.client.guilds.forEach(guild => {
             const gameData: IGameData = this.client.provider.get(guild, 'zombies', null);
             if (gameData) {
-                this.games[guild.id] = new ZombiesGame(this.client, guild, gameData);
+                this.games[guild.id] = new ZombiesGame(this.client, guild, gameData, null);
             }
         })
     }
@@ -37,8 +37,9 @@ export class ZombiesEngine {
     private addListeners() {
         // GAME
         bus.subscribe(gameCreate, event => {
-            const { guild } = event.payload;
-            this.games[guild.id] = new ZombiesGame(this.client, guild, null);
+            const { guild, players } = event.payload;
+
+            this.games[guild.id] = new ZombiesGame(this.client, guild, null, players);
         });
 
         bus.subscribe(gameDestroy, event => {

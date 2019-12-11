@@ -1,8 +1,9 @@
 import { createEventDefinition } from "ts-bus";
-import { Guild } from "discord.js";
+import { Guild, User } from "discord.js";
 
 export const gameCreate = createEventDefinition<{
     guild: Guild;
+    players: { id: string, username: string }[]
 }>()("game.create");
 
 export const gameDestroy = createEventDefinition<{

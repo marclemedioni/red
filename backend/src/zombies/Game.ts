@@ -11,12 +11,17 @@ export class ZombiesGame implements IGame {
     client: CommandoClient;
     players: IPlayer[];
 
-    constructor(client: CommandoClient, guild: Guild, gameData: IGameData | null) {
+    constructor(client: CommandoClient, guild: Guild, gameData: IGameData | null, players: [] | null) {
         this.client = client;
         this.guild = guild;
 
         this.manageGuildChannels();
-        this.loadGame(gameData);
+        if (gameData) {
+            this.loadGame(gameData);
+        }
+        if (players) {
+            this.initGame(players);
+        }
         this.start();
 
         // client.on('ready', () => {
@@ -38,14 +43,16 @@ export class ZombiesGame implements IGame {
     }
 
     loadGame(gameData) {
-        if (gameData) {
-            console.log(`Loading game for ${this.guild.name}`);
-            infoLog.info(`Loading game for ${this.guild.name}`);
-            this.players = gameData.players
-        }
-        else {
-            this.client.provider.set(this.guild, 'zombies', {});
-        }
+        console.log(`Loading game for ${this.guild.name}`);
+        infoLog.info(`Loading game for ${this.guild.name}`);
+
+        this.players = gameData.players
+    }
+
+    initGame(players) {
+        this.client.provider.set(this.guild, 'zombies', {
+            players: players
+        })
     }
 
     async manageGuildChannels() {
