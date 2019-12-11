@@ -17,6 +17,8 @@
   "dependencies": {
     "agenda": "^2.2.0",
     "axios": "^0.19.0",
+    "bunyan": "^1.8.12",
+    "bunyan-rotating-file-stream": "^1.6.3",
     "common-tags": "^1.8.0",
     "discord.js": "^11.5.1",
     "discord.js-commando": "^0.10.0",
@@ -24,6 +26,7 @@
     "moment": "^2.24.0",
     "node-json-db": "^1.0.2",
     "node-opus": "^0.3.3",
+    "ts-bus": "^2.1.0",
     "ytdl-core": "^1.0.3"
   },
   "devDependencies": {
