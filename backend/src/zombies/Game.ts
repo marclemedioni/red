@@ -109,8 +109,8 @@ export class ZombiesGame implements IGame {
         const CategoryChannel = await this.guild.channels.find(channel => channel.type === 'category' && channel.name === DISCORD_CATEGORY_CHANNEL_NAME);
         const CityChannel = await this.guild.channels.find(channel => channel.name === DISCORD_CITY_CHANNEL_NAME && channel.type === 'text' && channel.parent && channel.parent.name === DISCORD_CATEGORY_CHANNEL_NAME);
 
-        CategoryChannel.delete();
-        CityChannel.delete();
+        await CategoryChannel.delete();
+        await CityChannel.delete();
     }
 
     async start() {
@@ -119,11 +119,11 @@ export class ZombiesGame implements IGame {
     }
 
 
-    destroy() {
+    async destroy() {
         console.log(`Destroying Zombies game for guild: ${this.guild.name}`);
         infoLog.info(`Destroying Zombies game for guild: ${this.guild.name}`);
-        this.client.provider.remove(this.guild, 'zombies');
-        this.removeGuildChannels();
+        await this.client.provider.remove(this.guild, 'zombies');
+        await this.removeGuildChannels();
     }
 }
 

@@ -42,9 +42,9 @@ export class ZombiesEngine {
             this.games[guild.id] = new ZombiesGame(this.client, guild, null, players);
         });
 
-        bus.subscribe(gameDestroy, event => {
+        bus.subscribe(gameDestroy, async (event) => {
             const { guild } = event.payload;
-            (this.games[guild.id] as ZombiesGame).destroy();
+            await (this.games[guild.id] as ZombiesGame).destroy();
             delete this.games[guild.id];
         });
     }
