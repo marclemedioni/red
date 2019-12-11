@@ -16,7 +16,7 @@
           <div class="navbar-star"></div>
           <div class="navbar-end">
             <div class="navbar-item">
-                <router-link :to='{name:home}' class="navbar-item">
+                <router-link :to="{ name: 'home' }" class="navbar-item">
                  Home
                 </router-link>
                 <a class="navbar-item">
@@ -25,12 +25,15 @@
                 <a class="navbar-item">
                   Documentation
                 </a>
+                <router-link :to="{name:'task'}" class="navbar-item">
+                  Task
+                </router-link>
             </div>
           </div>
         </div>
       </nav>
-  </div>
-    <router-view/>
+    </div>
+    <router-view></router-view>
   </section>
 </template>
 
