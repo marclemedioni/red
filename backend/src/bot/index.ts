@@ -1,12 +1,12 @@
+import dotenvSafe from 'dotenv-safe';
 import commando from 'discord.js-commando';
 import path from 'path';
 import { NodeJsonDbProvider } from './components/SettingProvider';
-import dotenvSafe from 'dotenv-safe';
 //import { Idler } from './idler/idler';
 
 dotenvSafe.config();
 
-const client = new commando.CommandoClient({
+export const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(','),
 });
 
@@ -69,5 +69,3 @@ client.registry
 
   // Registers all of your commands in the ./commands/ directory
   .registerCommandsIn(path.join(__dirname, 'commands'));
-
-client.login(process.env.DISCORD_TOKEN)
