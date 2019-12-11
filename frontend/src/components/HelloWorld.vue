@@ -27,7 +27,7 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Uptime</p>
-                <p class="title">{{uptime}}</p>
+                <p class="title">{{getUptime(time)}}</p>
               </div>
             </div>
           </nav>
@@ -49,14 +49,48 @@ export default {
       guilds: String,
       channels: String,
       users: String,
-      uptime: String
+      timer: Number,
+      time: 0
     }
   },
+  methods: {
+    getClient () {
+      this.axios.get('http://localhost:7000/client').then((response) => {
+        this.guilds = response.data.guilds
+        this.channels = response.data.channels
+        this.users = response.data.users
+        this.time = response.data.uptime
+      }).catch((error) => {
+        if (!error.status) {
+          this.guilds = '-'
+          this.channels = '-'
+          this.users = '-'
+          this.time = 0
+        }
+      })
+    },
+    getUptime (duration) {
+      var seconds = Math.floor((duration / 1000) % 60)
+      var minutes = Math.floor((duration / (1000 * 60)) % 60)
+      var hours = Math.floor((duration / (1000 * 60 * 60)) % 24)
+      hours = (hours < 10) ? '0' + hours : hours
+      minutes = (minutes < 10) ? '0' + minutes : minutes
+      seconds = (seconds < 10) ? '0' + seconds : seconds
+      return hours + ':' + minutes + ':' + seconds
+    },
+    cancelAutoUpdate () { clearInterval(this.timer) }
+
+  },
   mounted () {
-    this.guilds = '???'
-    this.channels = '???'
-    this.users = '???'
-    this.uptime = '???'
+    this.getClient()
+    this.guilds = '-'
+    this.channels = '-'
+    this.users = '-'
+    this.timer = setInterval(() => this.getClient(), 1000)
+  },
+  Destroy () {
+    clearInterval(this.timer)
+    this.cancelAutoUpdate()
   }
 }
 </script>
