@@ -1,24 +1,24 @@
 import { CommandoClient } from "discord.js-commando";
 import { Guild, TextChannel } from "discord.js";
-import { IGame, IPlayer, IGameData, IMap } from "./zombies";
+import { plainToClass } from "class-transformer";
+
 import { infoLog } from './logger';
-import { Map } from './Map';
+import { ZombiesMap } from './Map';
+import { Player } from "./Player";
 
 const DISCORD_CATEGORY_CHANNEL_NAME = 'zombies';
 const DISCORD_CITY_CHANNEL_NAME = 'village';
 const MAP_SIZE = 10;
 
-export class ZombiesGame implements IGame {
+export class ZombiesGame {
     guild: Guild;
     client: CommandoClient;
-    players: IPlayer[];
-    map: IMap;
+    players: Player[];
+    map: ZombiesMap;
+    day: number;
 
-    constructor(client: CommandoClient, guild: Guild, gameData: IGameData | null, players: [] | null) {
+    constructor(client: CommandoClient) {
         this.client = client;
-        this.guild = guild;
-
-        this.run(gameData, players);
 
         // client.on('ready', () => {
         //     client.guilds.forEach(guild => {
@@ -38,34 +38,45 @@ export class ZombiesGame implements IGame {
         // });
     }
 
-    async run(gameData: IGameData | null, players: [] | null) {
-        await this.manageGuildChannels();
-        if (gameData) {
-            await this.loadGame(gameData);
-        }
-        if (players) {
-            await this.initGame(players);
-        }
-        await this.start();
-    }
+    load(guild: Guild) {
+        this.guild = guild;
 
-    loadGame(gameData) {
-        console.log(`Loading game for ${this.guild.name}`);
-        infoLog.info(`Loading game for ${this.guild.name}`);
+        console.log(`Loading game for ${guild.name}`);
+        infoLog.info(`Loading game for ${guild.name}`);
 
-        this.players = gameData.players
-    }
+        // Retrieve data from db
+        const gameData = this.client.provider.get(guild, 'zombies', null);
 
-    async initGame(players) {
-        this.client.provider.set(this.guild, 'zombies', {
-            players: players
-        });
+        // Put data into game object
+        this.players = gameData.players.map(player => plainToClass(Player, player));
+        this.map = plainToClass(ZombiesMap, gameData.map);
 
-        this.map = new Map(null, MAP_SIZE);
-        const cityChannel = await this.guild.channels.find(channel => channel.name === DISCORD_CITY_CHANNEL_NAME && channel.type === 'text' && channel.parent && channel.parent.name === DISCORD_CATEGORY_CHANNEL_NAME) as TextChannel;
-        console.log(cityChannel)
         console.log(this.map.toString())
-        await cityChannel.send(this.map.toString())
+
+        // TODO
+        // Start game
+    }
+
+    async init(guild, participants) {
+        this.guild = guild;
+        this.day = 1;
+        this.players = participants.map(participant => plainToClass(Player, {
+            id: participant.id,
+            name: participant.username,
+            hungry: false,
+            thirsty: true
+        }))
+        this.map = new ZombiesMap(MAP_SIZE);
+
+        this.save();
+
+        await this.manageGuildChannels();
+
+        const cityChannel = await this.guild.channels.find(channel => channel.name === DISCORD_CITY_CHANNEL_NAME && channel.type === 'text' && channel.parent && channel.parent.name === DISCORD_CATEGORY_CHANNEL_NAME) as TextChannel;
+        await cityChannel.send(this.map.toString());
+
+        // TODO
+        // Start game
     }
 
     async manageGuildChannels() {
@@ -92,11 +103,14 @@ export class ZombiesGame implements IGame {
             console.log(`Creating Zombies Commands Channel for Guild: ${this.guild.name}`);
             infoLog.info(`Creating Zombies Commands Channel for Guild: ${this.guild.name}`);
             try {
-                const commandsChannel = await this.guild.createChannel(DISCORD_CITY_CHANNEL_NAME, 'text', [{
-                    id: this.guild.id,
-                    deny: ['SEND_TTS_MESSAGES', 'ATTACH_FILES', 'MENTION_EVERYONE'],
-                    allow: ['SEND_MESSAGES', 'ADD_REACTIONS']
-                }], 'Creating channels for Zombies');
+                const commandsChannel = await this.guild.createChannel(DISCORD_CITY_CHANNEL_NAME, {
+                    type: 'text',
+                    permissionOverwrites: [{
+                        id: this.guild.id,
+                        deny: ['SEND_TTS_MESSAGES', 'ATTACH_FILES', 'MENTION_EVERYONE'],
+                        allow: ['SEND_MESSAGES', 'ADD_REACTIONS']
+                    }]
+                });
                 await commandsChannel.setParent(this.guild.channels.find(channel => channel.type === 'category' && channel.name === DISCORD_CATEGORY_CHANNEL_NAME));
                 await commandsChannel.setTopic('Bienvenue en ville !', 'Setting up Zombies Channels');
             } catch (err) {
@@ -124,6 +138,14 @@ export class ZombiesGame implements IGame {
         infoLog.info(`Destroying Zombies game for guild: ${this.guild.name}`);
         await this.client.provider.remove(this.guild, 'zombies');
         await this.removeGuildChannels();
+    }
+
+    save() {
+        this.client.provider.set(this.guild, 'zombies', {
+            day: this.day,
+            players: this.players,
+            map: this.map
+        });
     }
 }
 

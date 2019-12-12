@@ -81,7 +81,7 @@ export default class NewGameZombiesCommand extends Command {
         `)
         await sentMessage.clearReactions();
 
-        bus.publish(gameCreate({ guild: msg.guild, players: users.map(user => ({ id: user.id, username: user.username })) }));
+        bus.publish(gameCreate({ guild: msg.guild, participants: users.map(user => ({ id: user.id, username: user.username })) }));
         return sentMessage.edit(embed)
     }
 }

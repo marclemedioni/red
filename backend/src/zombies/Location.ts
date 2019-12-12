@@ -1,11 +1,5 @@
-import { ILocation } from "./zombies";
+export class ZombiesLocation {
+    constructor(public x: number, public y: number) {
 
-export class Location implements ILocation {
-    x: number;
-    y: number;
-
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
     }
 }
