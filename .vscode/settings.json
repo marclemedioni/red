@@ -1,0 +1,6 @@
+{
+    "jest.rootPath": "backend",
+    "jest.showCoverageOnLoad": true,
+    "jest.pathToJest": "npm run test:watch --",
+    "jest.runAllTestsFirst": false
+}
