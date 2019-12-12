@@ -1,7 +1,9 @@
 const express = require('express')
 const bodyParser = require("body-parser");
+import {routes} from './router/routes'
+import { listenExpress} from './socket/socket'
 
-export class webSocket{
+export class Server{
     port:Number;
     client:object;
     app:any;
@@ -25,36 +27,15 @@ export class webSocket{
         })
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
+        
 
-        this.registerRoots(this.client)
+        routes(this.client, this.router)
         this.app.use(this.router)
         this.server = this.app.listen(port, () => {
             console.log("Websocket API set up at port " + this.server.address().port)
         })
+        listenExpress(this.server)
+       
 
-    }
-    registerRoots(client) {
-        this.router.route('/client')
-            .get(function(req,res){
-                res.json({guilds:client.guilds.size.toString(), channels:client.channels.size.toString(), users: client.users.size.toString(), uptime:client.uptime})
-            })
-        this.router.route('/guilds')
-            .get(function(req,res){
-                res.json({guilds:client.guilds.array(), channels:client.channels.filter(c => c.type == 'text').array()})
-            })
-        this.router.route('/message')
-            .post(function(req,res){
-                var channel = req.body.selectChannel
-                var guild = req.body.selectGuild
-                var text = req.body.text
-                guild = client.guilds.find('id', guild);
-                channel = guild.channels.get(channel)
-                if(channel){
-                    channel.send(text)
-                    res.sendStatus(200)
-                }else{
-                    res.sendStatus(406)
-                }
-            })
     }
 }

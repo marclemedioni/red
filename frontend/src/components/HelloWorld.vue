@@ -1,5 +1,5 @@
 <template>
-  <div class="home-body">
+  <div class="home-body background-red">
     <div class="container has-text-centered">
       <div class="logo"></div>
       <div class="informations">
@@ -43,7 +43,7 @@
 </template>
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'home',
   data () {
     return {
       guilds: String,
@@ -88,7 +88,7 @@ export default {
     this.users = '-'
     this.timer = setInterval(() => this.getClient(), 1000)
   },
-  Destroy () {
+  beforeDestroy () {
     clearInterval(this.timer)
     this.cancelAutoUpdate()
   }

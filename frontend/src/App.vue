@@ -19,9 +19,9 @@
                 <router-link :to="{ name: 'home' }" class="navbar-item">
                  Home
                 </router-link>
-                <a class="navbar-item">
+                <router-link :to="{name:'commands'}" class="navbar-item">
                   Commands
-                </a>
+                </router-link>
                 <a class="navbar-item">
                   Documentation
                 </a>
@@ -38,7 +38,14 @@
 </template>
 
 <script>
+import io from 'socket.io-client'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    var socket = io('http://localhost:7000')
+    socket.on('toto', function (message) {
+
+    })
+  }
 }
 </script>
