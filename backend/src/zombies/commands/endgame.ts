@@ -35,7 +35,7 @@ export default class EndGameZombiesCommand extends Command {
         if (msg.client.provider.get(msg.guild, 'zombies', false)) {
             bus.publish(gameDestroy({ guild: msg.guild }));
 
-            let embedMessage = `${msg.author.username} a appuyé sur bouton rouge et a détruit tout les zombies d'un seul coup !`;
+            let embedMessage = `${msg.member.displayName} a appuyé sur bouton rouge et a détruit tout les zombies d'un seul coup !`;
 
             const attachment = new Attachment(path.join(__dirname, '../assets/images/zombie.png'), 'zombie.png');
             const embed = new RichEmbed()

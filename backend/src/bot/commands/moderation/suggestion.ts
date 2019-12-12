@@ -15,11 +15,11 @@ export default class SuggestionModeratorCommand extends Command {
             description: 'Add Suggestion for Discord Server',
             examples: ['<prefix>suggestion Add new channel for comments'],
             guildOnly: true,
-            args: [{key: 'description', type: 'string', prompt:'string'}],
+            args: [{ key: 'description', type: 'string', prompt: 'string' }],
         });
     }
 
-    
+
 
     private async  verif(msg: CommandMessage) {
         const channel = msg.guild.channels.find('name', 'suggestion');
@@ -42,15 +42,15 @@ export default class SuggestionModeratorCommand extends Command {
 
         serverEmbed
             .setColor(DEFAULT_EMBED_COLOR)
-            .setAuthor(msg.author.username, msg.author.avatarURL)
+            .setAuthor(msg.member.displayName, msg.author.avatarURL)
             .setDescription(description)
             .setTimestamp()
-        
+
 
         var message = await chan!.sendEmbed(serverEmbed);
         message.react('✅');
         message.react('❌');
-    
+
         deleteCommandMessages(msg, this.client);
         return msg.channel.send("✅  Suggestion has been Added");;
     }

@@ -42,7 +42,7 @@ export default class NewGameZombiesCommand extends Command {
 
         const yes = '👍';
         const no = '👎';
-        let embedMessage = `${msg.author.username} se sent d'humeur aventureuse et propose une partie de Zombies, ça vous tente ?`;
+        let embedMessage = `${msg.member.displayName} se sent d'humeur aventureuse et propose une partie de Zombies, ça vous tente ?`;
 
         const attachment = new Attachment(path.join(__dirname, '../assets/images/zombie.png'), 'zombie.png');
         const embed = new RichEmbed()
