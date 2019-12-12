@@ -40,6 +40,7 @@ body{
 }
 .sticky{
     position: sticky;
+    top: 10px;
 }
 .carte{
     padding: 1em 1em 1em 1em; 
@@ -122,4 +123,8 @@ code{
 }
 .menu-list .is-active{
     background-color: #7289da!important;
+}
+.progress.is-primary:indeterminate {
+    background-image: linear-gradient(to right,#7289da 30%,#ededed 30%);
+
 }

@@ -41,7 +41,26 @@
                 </div>
                 <div class="column is-one-quarter">
 
+                    <div class="tabcontent" style="display: block;" v-for="(noti, key) in notification" :key="key">
+                        <div class="card card-command">
+                            <header class="card-header">
+                                <p class="card-header-title">
+                                    <code>{{prefix}}{{command.name}}</code>
+                                </p>
+                                <div class="card-header-icon">
+                                    <span class="tag is-success is-pulled-right" v-if="command.ownerOnly">ADMINISTRATOR</span>
+                                    <span class="tag is-discord is-pulled-right" v-if="command.guildOnly">SERVER ONLY</span>
+                                </div>
+                            </header>
+                            <div class="card-content card-content-command">
+                                <div class="content">
+                                    {{ command.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -54,7 +73,8 @@ export default {
       groups: Array,
       Commands: Array,
       prefix: String,
-      select: 'commands'
+      select: 'commands',
+      notification: []
     }
   },
   watch: {

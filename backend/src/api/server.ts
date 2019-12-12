@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require("body-parser");
 import {routes} from './router/routes'
 import { listenExpress} from './socket/socket'
+import {eventCommands} from './event/commands'
 
 export class Server{
     port:Number;
@@ -35,6 +36,7 @@ export class Server{
             console.log("Websocket API set up at port " + this.server.address().port)
         })
         listenExpress(this.server)
+        eventCommands(this.client)
        
 
     }

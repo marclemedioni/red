@@ -37,9 +37,10 @@
                     </div>
                 </div>
                 <div class="field">
-                    <div class="control has-text-right">
-                        <button class="button is-validate-discord">Send Message</button>
-                    </div>
+                  <progress class="progress is-small is-primary" max="100" v-if="sync">15%</progress>
+                  <div class="control has-text-right">
+                    <button class="button is-validate-discord" v-if="!sync">Send Message</button>
+                  </div>
                 </div>
             </form>
         </div>
@@ -56,6 +57,7 @@ export default {
       users: String,
       timer: Number,
       time: 0,
+      sync: false,
       selectGuild: 'ooo',
       selectChannel: null,
       listeChannel: []
@@ -82,10 +84,24 @@ export default {
       })
     },
     formulaire () {
+      this.sync = true
       const {selectGuild, selectChannel, text} = this
-      this.axios.post('http://localhost:7000/message', {selectGuild, selectChannel, text}).then((response) => {
-
-      })
+      if (selectGuild !== 'ooo') {
+        if (selectChannel != null) {
+          if (text !== '') {
+            this.axios.post('http://localhost:7000/message', {selectGuild, selectChannel, text}).then((response) => {
+              this.sync = false
+              this.text = ''
+            })
+          } else {
+            this.sync = false
+          }
+        } else {
+          this.sync = false
+        }
+      } else {
+        this.sync = false
+      }
     }
 
   },
