@@ -2,7 +2,8 @@ import { Command, CommandoClient, CommandMessage } from "discord.js-commando";
 import { bus } from '../bus';
 import { gameCreate } from "../events";
 import { stripIndents } from 'common-tags';
-import { RichEmbed, Message } from "discord.js";
+import path from 'path';
+import { RichEmbed, Message, Attachment } from "discord.js";
 
 /**
  * @file Zombies NewGameCommand - Launch a new Zombies game
@@ -43,8 +44,11 @@ export default class NewGameZombiesCommand extends Command {
         const no = '👎';
         let embedMessage = `${msg.author.username} se sent d'humeur aventureuse et propose une partie de Zombies, ça vous tente ?`;
 
+        const attachment = new Attachment(path.join(__dirname, '../assets/images/zombie.png'), 'zombie.png');
         const embed = new RichEmbed()
             .setAuthor(embedMessage)
+            .setThumbnail('attachment://zombie.png')
+            .attachFile(attachment)
             .setColor('RED');
 
         const sentMessage = (await msg.channel.send(embed)) as Message
@@ -66,7 +70,7 @@ export default class NewGameZombiesCommand extends Command {
                 Ou pas...
             `)
             await sentMessage.clearReactions();
-            this.client.provider.remove(msg.guild, 'zombies')
+            await this.client.provider.remove(msg.guild, 'zombies')
             return sentMessage.edit(embed);
         }
 

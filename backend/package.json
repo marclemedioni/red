@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "start": "rimraf dist && tsc-watch --onSuccess \"node ./dist\" --compiler \"typescript/bin/tsc\"",
+    "start": "rimraf dist && copy 'src/**/assets/**/*' dist && tsc-watch --onSuccess \"node ./dist\" --compiler \"typescript/bin/tsc\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@types/dotenv-safe": "^8.1.0",
     "@types/node": "^12.12.17",
+    "copy": "^0.3.2",
     "rimraf": "^3.0.0",
     "tsc-watch": "^4.0.0",
     "tsconfig-paths": "^3.9.0",
