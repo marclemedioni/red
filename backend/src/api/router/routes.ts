@@ -1,5 +1,6 @@
 import {socketServer} from '../socket/socket'
-export const routes = (client, router) => {
+import {client} from '../../bot'
+export const routes = (router) => {
     router.route('/client')
         .get(function(req,res){
             res.json({guilds:client.guilds.size.toString(), channels:client.channels.size.toString(), users: client.users.size.toString(), uptime:client.uptime})

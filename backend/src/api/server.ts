@@ -30,13 +30,13 @@ export class Server{
         this.app.use(bodyParser.json());
         
 
-        routes(this.client, this.router)
+        routes(this.router)
         this.app.use(this.router)
         this.server = this.app.listen(port, () => {
             console.log("Websocket API set up at port " + this.server.address().port)
         })
         listenExpress(this.server)
-        eventCommands(this.client)
+        eventCommands()
        
 
     }

@@ -1,8 +1,4 @@
-import { DEFAULT_EMBED_COLOR } from '../../components/Constants';
-import { deleteCommandMessages } from '../../components/Utils';
 import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
-import { RichEmbed, TextChannel } from 'discord.js';
-
 
 export default class ClearModeratorCommand extends Command {
     public constructor(client: CommandoClient) {
@@ -22,7 +18,6 @@ export default class ClearModeratorCommand extends Command {
             .then(function(messages){ 
                 var selection = messages.filter(m => m.author.id === id)
                 selection.deleteAll()
-                console.log(selection.size)
                 valeur = selection.size
             })
         return valeur;
