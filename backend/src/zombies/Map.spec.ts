@@ -1,4 +1,4 @@
-import { ZombiesMap, ZombiesMapSettings } from './Map';
+import { ZombiesMap } from './Map';
 import { plainToClass } from 'class-transformer';
 import { ZombiesTile } from './Tile';
 import { ZombiesLocation } from './Location';
@@ -38,7 +38,7 @@ describe('ZombiesMap', () => {
     it('should populate accordingly to day', () => {
         const map = new ZombiesMap(MAP_SIZE);
         map.generate();
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000; i++) {
             map.populate(1);
             expect(map.zombiesCount).toBeLessThanOrEqual(15);
             map.populate(2);

@@ -10,6 +10,13 @@ const DISCORD_CATEGORY_CHANNEL_NAME = 'zombies';
 const DISCORD_CITY_CHANNEL_NAME = 'village';
 const MAP_SIZE = 10;
 
+export const ZombiesGameSettings = {
+    easy: {
+        zombiesMultiplicator: 1,
+        safeRange: 4
+    }
+}
+
 export class ZombiesGame {
     guild: Guild;
     client: CommandoClient;
@@ -68,6 +75,7 @@ export class ZombiesGame {
         }))
         this.map = new ZombiesMap(MAP_SIZE);
         this.map.generate()
+        this.map.populate(1);
 
         this.save();
 

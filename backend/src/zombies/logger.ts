@@ -6,12 +6,12 @@ import fs from 'fs';
 
 const dir = path.join(rootPath, 'logs');
 
-if (!fs.existsSync(dir)) {
+if (!fs.existsSync(dir) && process.env.NODE_ENV !== 'test') {
     console.log('Logs folder created');
     fs.mkdirSync(dir);
 }
 
-export const infoLog = bunyan.createLogger({
+export const infoLog = process.env.NODE_ENV === 'test' ? () => { } : bunyan.createLogger({
     name: 'info',
     streams: [{
         stream: new RotatingFileStream({
@@ -25,7 +25,7 @@ export const infoLog = bunyan.createLogger({
     }]
 })
 
-export const exceptionLog = bunyan.createLogger({
+export const exceptionLog = process.env.NODE_ENV === 'test' ? () => { } : bunyan.createLogger({
     name: 'exception',
     streams: [{
         stream: process.stderr
@@ -42,49 +42,7 @@ export const exceptionLog = bunyan.createLogger({
     }]
 })
 
-export const welcomeLog = bunyan.createLogger({
-    name: 'welcome',
-    streams: [{
-        stream: new RotatingFileStream({
-            path: path.join(rootPath, 'logs/welcome.%d-%b-%y.log'),
-            period: '15d',          // daily rotation
-            totalFiles: 10,        // keep up to 10 back copies
-            rotateExisting: true,  // Give ourselves a clean file when we start up, based on period
-            threshold: '10m',      // Rotate log files larger than 10 megabytes
-            totalSize: '20m',      // Don't keep more than 20mb of archived log files
-        })
-    }]
-})
-
-export const actionLog = bunyan.createLogger({
-    name: 'action',
-    streams: [{
-        stream: new RotatingFileStream({
-            path: path.join(rootPath, 'logs/action.%d-%b-%y.log'),
-            period: '15d',          // daily rotation
-            totalFiles: 10,        // keep up to 10 back copies
-            rotateExisting: true,  // Give ourselves a clean file when we start up, based on period
-            threshold: '10m',      // Rotate log files larger than 10 megabytes
-            totalSize: '20m',      // Don't keep more than 20mb of archived log files
-        })
-    }]
-})
-
-export const moveLog = bunyan.createLogger({
-    name: 'move',
-    streams: [{
-        stream: new RotatingFileStream({
-            path: path.join(rootPath, 'logs/move.%d-%b-%y.log'),
-            period: '15d',          // daily rotation
-            totalFiles: 10,        // keep up to 10 back copies
-            rotateExisting: true,  // Give ourselves a clean file when we start up, based on period
-            threshold: '10m',      // Rotate log files larger than 10 megabytes
-            totalSize: '20m',      // Don't keep more than 20mb of archived log files
-        })
-    }]
-})
-
-export const errorLog = bunyan.createLogger({
+export const errorLog = process.env.NODE_ENV === 'test' ? () => { } : bunyan.createLogger({
     name: 'error',
     streams: [{
         stream: new RotatingFileStream({
@@ -101,7 +59,7 @@ export const errorLog = bunyan.createLogger({
     }]
 })
 
-export const commandLog = bunyan.createLogger({
+export const commandLog = process.env.NODE_ENV === 'test' ? () => { } : bunyan.createLogger({
     name: 'command',
     streams: [{
         stream: new RotatingFileStream({
@@ -117,9 +75,6 @@ export const commandLog = bunyan.createLogger({
 
 process.on('SIGUSR2', () => {
     infoLog.reopenFileStreams();
-    welcomeLog.reopenFileStreams();
-    actionLog.reopenFileStreams();
-    moveLog.reopenFileStreams();
     errorLog.reopenFileStreams();
     commandLog.reopenFileStreams();
     exceptionLog.reopenFileStreams();

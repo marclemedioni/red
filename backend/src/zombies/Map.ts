@@ -1,13 +1,7 @@
 import { ZombiesTile } from "./Tile";
 import { ZombiesLocation } from "./Location";
 import { Type } from "class-transformer";
-
-export const ZombiesMapSettings = {
-    easy: {
-        zombiesMultiplicator: 1,
-        safeRange: 4
-    }
-}
+import { ZombiesGameSettings } from "./Game";
 
 function randomBetween(min: number, max: number, decimalPlaces: number = 0) {
     const rand = Math.random() * (max - min);
@@ -36,7 +30,7 @@ export class ZombiesMap {
     }
 
     populate(day: number) {
-        const zMultiplicator = ZombiesMapSettings[this.mode].zombiesMultiplicator;
+        const zMultiplicator = ZombiesGameSettings[this.mode].zombiesMultiplicator;
 
         /**
          * stable part of horde
@@ -48,10 +42,18 @@ export class ZombiesMap {
         /**
          * random part of horde
          */
-        this.zombiesCount += randomBetween(0, 6) * day * zMultiplicator;
+        this.zombiesCount += randomBetween(1, 6) * day * zMultiplicator;
 
         for (let z = 0; z < this.zombiesCount; z++) {
+            let location: ZombiesLocation;
+            do {
+                location = new ZombiesLocation(randomBetween(0, this.size), randomBetween(0, this.size));
+            } while (location.distanceTo(this.cityLocation) === 0)
 
+            const tile = this.getTileByLocation(location);
+            if (tile) {
+                tile.zombiesCount += 1;
+            }
         }
     }
 

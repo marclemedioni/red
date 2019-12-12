@@ -1,13 +1,14 @@
-export class ZombiesTile {
+import { ZombiesLocation } from "./Location";
+
+export class ZombiesTile extends ZombiesLocation {
+    zombiesCount: number = 0;
     constructor(public x: number, public y: number, public isCity: boolean | undefined) {
-        // this.x = x;
-        // this.y = y;
-        // this.isCity = isCity
+        super(x, y)
     }
 
     toString() {
         let result = '['
-        result += this.isCity ? 'C' : ' ';
+        result += this.isCity ? 'C' : this.zombiesCount ? `${this.zombiesCount}` : ' ';
         result += ']'
         return result
     }
