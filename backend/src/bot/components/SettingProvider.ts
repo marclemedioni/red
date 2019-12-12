@@ -126,10 +126,12 @@ export class NodeJsonDbProvider extends SettingProvider {
         const settings = this.settings.get(guild);
         if (!settings || typeof settings[key] === 'undefined') return;
 
+        this.db.delete('/settings/' + guild + '/' + key)
+
         const val = settings[key];
         delete settings[key]; // NOTE: I know this isn't efficient, but it does the job.
 
-        this.updateGuild(guild, settings);
+        //this.updateGuild(guild, settings);
 
         if (guild === 'global') this.updateOtherShards(key, undefined);
         return val;
