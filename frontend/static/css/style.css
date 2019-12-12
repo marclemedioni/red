@@ -128,3 +128,12 @@ code{
     background-image: linear-gradient(to right,#7289da 30%,#ededed 30%);
 
 }
+.content figure{
+    margin: 0!important;
+}
+.is-grey{
+    color:#99aab5 ;
+}
+.is-white{
+    color: #ffffff;
+}

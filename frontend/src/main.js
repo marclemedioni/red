@@ -7,6 +7,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 Vue.use(VueAxios, axios)
+Vue.use(require('vue-moment'))
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
