@@ -1,7 +1,6 @@
 import path from 'path';
 import { CommandoClient } from "discord.js-commando";
 
-import { ZombiesMap } from './Map';
 import { ZombiesGame } from './Game';
 import { gameCreate, gameDestroy } from "./events";
 import { bus } from "./bus";

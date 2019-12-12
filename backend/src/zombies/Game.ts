@@ -67,13 +67,14 @@ export class ZombiesGame {
             thirsty: true
         }))
         this.map = new ZombiesMap(MAP_SIZE);
+        this.map.generate()
 
         this.save();
 
         await this.manageGuildChannels();
 
         const cityChannel = await this.guild.channels.find(channel => channel.name === DISCORD_CITY_CHANNEL_NAME && channel.type === 'text' && channel.parent && channel.parent.name === DISCORD_CATEGORY_CHANNEL_NAME) as TextChannel;
-        await cityChannel.send(this.map.toString());
+        await cityChannel.send(`\`\`\`${this.map.toString()}\`\`\``);
 
         // TODO
         // Start game

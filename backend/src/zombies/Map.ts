@@ -14,7 +14,7 @@ export class ZombiesMap {
         return Math.floor(Math.random() * (this.size));
     }
 
-    generateMap() {
+    generate() {
         this.tiles = [];
         this.cityLocation = new ZombiesLocation(this.randomClampToSize(), this.randomClampToSize());
         for (let x = 0; x < this.size; x++) {
