@@ -1,9 +1,10 @@
+const { defaults } = require('jest-config');
 module.exports = {
-    name: 'backend',
+    name: 'zombies',
     transform: {
         '^.+\\.[tj]s$': 'ts-jest'
     },
-    moduleFileExtensions: ['ts', 'js'],
+    moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'js'],
     coverageDirectory: './coverage',
     setupFiles: ['./jest.setup.ts'],
     collectCoverage: true,

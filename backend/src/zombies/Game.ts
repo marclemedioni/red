@@ -4,11 +4,11 @@ import { plainToClass } from "class-transformer";
 
 import { infoLog } from './logger';
 import { ZombiesMap } from './Map';
-import { Player } from "./Player";
+import { ZombiesPlayer } from "./Player";
 
 const DISCORD_CATEGORY_CHANNEL_NAME = 'zombies';
 const DISCORD_CITY_CHANNEL_NAME = 'village';
-const MAP_SIZE = 10;
+const MAP_SIZE = 20;
 
 export const ZombiesGameSettings = {
     easy: {
@@ -20,7 +20,7 @@ export const ZombiesGameSettings = {
 export class ZombiesGame {
     guild: Guild;
     client: CommandoClient;
-    players: Player[];
+    players: ZombiesPlayer[];
     map: ZombiesMap;
     day: number;
 
@@ -55,7 +55,7 @@ export class ZombiesGame {
         const gameData = this.client.provider.get(guild, 'zombies', null);
 
         // Put data into game object
-        this.players = gameData.players.map(player => plainToClass(Player, player));
+        this.players = gameData.players.map(player => plainToClass(ZombiesPlayer, Object.assign(player, { guildId: guild.id })));
         this.map = plainToClass(ZombiesMap, gameData.map);
 
         console.log(this.map.toString())
@@ -67,8 +67,9 @@ export class ZombiesGame {
     async init(guild, participants) {
         this.guild = guild;
         this.day = 1;
-        this.players = participants.map(participant => plainToClass(Player, {
+        this.players = participants.map(participant => plainToClass(ZombiesPlayer, {
             id: participant.id,
+            guildId: guild.id,
             name: participant.username,
             hungry: false,
             thirsty: true
