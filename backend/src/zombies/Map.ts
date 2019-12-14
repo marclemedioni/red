@@ -77,7 +77,7 @@ export class ZombiesMap {
             for (let j = location.y - (Math.floor(size / 2)); j <= location.y + (Math.floor(size / 2)); j++) {
                 let locationToTest = new ZombiesLocation(i, j);
 
-                if (!locationToTest.isInBounds(this.size)) {
+                if (!this.isLocationInbounds(locationToTest)) {
                     continue;
                 }
 
@@ -89,11 +89,15 @@ export class ZombiesMap {
     }
 
     getTileByLocation(location: ZombiesLocation): ZombiesTile | null {
-        if (!location.isInBounds(this.size)) {
+        if (!this.isLocationInbounds(location)) {
             return null;
         }
 
         return this.tiles[location.x][location.y]
+    }
+
+    isLocationInbounds(location) {
+        return location.x >= 0 && location.y >= 0 && (location.x < this.size) && (location.y < this.size)
     }
 
     toString() {

@@ -9,10 +9,23 @@ describe('ZombiesLocation', () => {
         expect(b.distanceTo(a)).toEqual(4)
     });
 
-    it('sould tell if location is out of bounds', () => {
-        const location = new ZombiesLocation(0, 9);
+    it('should be able to compute location after a move', () => {
+        const location = new ZombiesLocation(0, 0);
 
-        expect(location.isInBounds(10)).toBe(true)
-        expect(location.isInBounds(9)).toBe(false)
+        location.moveTo('UP');
+        expect(location.x).toBe(0);
+        expect(location.y).toBe(-1);
+
+        location.moveTo('DOWN');
+        expect(location.x).toBe(0);
+        expect(location.y).toBe(0);
+
+        location.moveTo('LEFT');
+        expect(location.x).toBe(-1);
+        expect(location.y).toBe(0);
+
+        location.moveTo('RIGHT');
+        expect(location.x).toBe(0);
+        expect(location.y).toBe(0);
     })
 })

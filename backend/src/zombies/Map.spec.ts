@@ -48,6 +48,16 @@ describe('ZombiesMap', () => {
         }
     });
 
+    it('sould tell if location is out of bounds', () => {
+        const map = new ZombiesMap(MAP_SIZE);
+        map.generate();
+        const locationInBounds = new ZombiesLocation(0, 9);
+        const locationOutBounds = new ZombiesLocation(0, 11);
+
+        expect(map.isLocationInbounds(locationInBounds)).toBe(true)
+        expect(map.isLocationInbounds(locationOutBounds)).toBe(false)
+    })
+
     it('should not pop zombies to near from city', () => {
         const map = new ZombiesMap(MAP_SIZE);
         map.generate();
