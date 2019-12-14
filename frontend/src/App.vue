@@ -28,6 +28,26 @@
                 <router-link :to="{name:'task'}" class="navbar-item">
                   Task
                 </router-link>
+                <div class="navbar-item has-dropdown is-hoverable" v-if="user">
+                  <a class="navbar-link is-arrowless">
+                    {{user.user.username}}
+                  </a>
+                  <div class="navbar-dropdown">
+                    <router-link :to="{name: 'Account'}" class="navbar-item">
+                      My account
+                    </router-link>
+                    <a class="navbar-item">
+                      My logs
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item" @click="logOut()">
+                      Log out
+                    </a>
+                  </div>
+                </div>
+                <a v-if="!user" href="https://discordapp.com/api/oauth2/authorize?client_id=321367990178152485&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Faccount&response_type=code&scope=identify%20guilds" class="navbar-item">
+                  Login
+                </a>
             </div>
           </div>
         </div>
@@ -41,10 +61,24 @@
 import io from 'socket.io-client'
 export default {
   name: 'App',
+  computed: {
+    user () {
+      if (this.$store.getters.isAuthenticated) {
+        return this.$store.getters.getProfile
+      }
+    }
+  },
+  methods: {
+    logOut: function () {
+      this.$store.dispatch('authLogout')
+        .then(() => {
+          this.$router.push('/')
+        })
+    }
+  },
   mounted () {
     var socket = io('http://localhost:7000')
     socket.on('toto', function (message) {
-
     })
   }
 }

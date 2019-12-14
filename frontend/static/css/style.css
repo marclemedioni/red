@@ -85,6 +85,21 @@ code{
 .navbar .navbar-item .router-link-exact-active{
     color:#7289da!important;
 }
+.navbar .navbar-item .navbar-link{
+    background-color: transparent!important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+.navbar .navbar-item .navbar-link:hover{
+    background-color: transparent!important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+.navbar-dropdown{
+    background-color: #23272a!important;
+    border-top: solid 2px #7289da;
+}
+.navbar-divider{
+    background-color: #7289da;
+}
 
 .logo{
     margin-top: 3rem;
@@ -112,7 +127,6 @@ code{
     background-color:#7289da;
     border-color:#23272a;
     color:#fff;
-    margin-left: 0.75rem;
 }
 .menu-list a{
     color: #ffffff;
@@ -136,4 +150,38 @@ code{
 }
 .is-white{
     color: #ffffff;
+}
+.is-gold{
+    color: #FFD700!important;
+}
+.center{
+    margin-left: auto;
+    margin-right: auto;
+}
+.info li{
+    color: #ffffff;
+}
+.table{
+    background-color: transparent!important;
+    color: #fff;
+    font-size: 1rem;
+}
+.table td{
+    border: none!important;
+}
+.tabs li a{
+    color: rgba(255, 255, 255, 0.7);
+}
+.tabs li a:hover{
+    color: rgba(255, 255, 255, 1);
+    border-bottom-color: #fff!important;
+}
+.tabs li.is-active a{
+    color: #7289da!important;
+    border-bottom-color: #7289da!important;
+}
+.is-border-bottom{
+    display: block;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 4px;
 }
