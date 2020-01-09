@@ -1,12 +1,12 @@
 /**
- * @file Music PauseSongCommand - Pauses the currently playing track
+ * @file Music ResumeSongCommand - Resumes the song after pausing it
  *
  * You need to be in a voice channel before you can use this command
  *
- * **Aliases**: `shh`, `shhh`, `shhhh`, `shhhhh`, `hush`, `halt`
+ * **Aliases**: `go`, `continue`, `ale`, `loss`, `res`
  * @module
  * @category music
- * @name pause
+ * @name resume
  */
 
 import { deleteCommandMessages } from '../../components/Utils';
@@ -14,17 +14,17 @@ import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { Snowflake } from 'discord.js';
 import { MusicCommand, MusicQueueType } from 'RedTypes';
 
-export default class PauseSongCommand extends Command {
+export default class ResumeSongCommand extends Command {
     private songQueue: Map<Snowflake, MusicQueueType>;
 
     public constructor(client: CommandoClient) {
         super(client, {
-            name: 'pause',
-            aliases: ['shh', 'shhh', 'shhhh', 'shhhhh', 'hush', 'halt'],
+            name: 'resume',
+            aliases: ['go', 'continue', 'ale', 'loss', 'res'],
             group: 'music',
-            memberName: 'pause',
-            description: 'Pauses the currently playing song',
-            examples: ['pause'],
+            memberName: 'resume',
+            description: 'Resumes the currently playing song.',
+            examples: ['resume'],
             guildOnly: true,
             throttling: {
                 usages: 2,
@@ -44,27 +44,21 @@ export default class PauseSongCommand extends Command {
 
     public async run(msg: CommandMessage) {
         const queue = this.queue.get(msg.guild.id);
-
         if (!queue) {
-            deleteCommandMessages(msg, this.client);
-
-            return msg.reply('I am not playing any music right now, why not get me to start something?');
+            return msg.reply('there isn\'t any music playing to resume, oh brilliant one.');
         }
         if (!queue.songs[0].dispatcher) {
-            deleteCommandMessages(msg, this.client);
-
-            return msg.reply('I can\'t pause a song that hasn\'t even begun playing yet.');
+            return msg.reply('pretty sure a song that hasn\'t actually begun playing yet could be considered "resumed".');
         }
-        if (!queue.songs[0].playing) {
-            deleteCommandMessages(msg, this.client);
-
-            return msg.reply('pauseception is not possible 🤔');
+        if (queue.songs[0].playing) {
+            return msg.reply('resuming a song that isn\'t paused is a great move. Really fantastic.');
         }
-        queue.songs[0].dispatcher.pause(true);
-        queue.songs[0].playing = false;
+
+        queue.songs[0].dispatcher.resume();
+        queue.songs[0].playing = true;
 
         deleteCommandMessages(msg, this.client);
 
-        return msg.reply(`paused the music. Use \`${this.client.commandPrefix}resume\` to continue playing.`);
+        return msg.reply('resumed the music. This party ain\'t over yet!');
     }
 }
