@@ -67,82 +67,12 @@ export default class StopMusicCommand extends Command {
         }
         if (!queue.songs[0].dispatcher) return msg.reply('the song hasn\'t even begun playing yet. Why not give it a chance?');
 
-        const threshold = Math.ceil((queue.voiceChannel.members.size - 1) / 3);
-        const force =
-            threshold <= 1 ||
-            queue.voiceChannel.members.size < threshold ||
-            queue.songs[0].member.id === msg.author!.id ||
-            (msg.member!.hasPermission('MANAGE_MESSAGES') && args.toLowerCase() === 'force');
-
-        if (force) {
-            deleteCommandMessages(msg, this.client);
-
-            queue.isTriggeredByStop = true;
-            this.queue.set(msg.guild.id, queue);
-
-            return msg.reply(this.stop(msg.guild, queue));
-        }
-
-        const vote = this.songVotes.get(msg.guild.id);
-
-        if (vote && vote.count >= 1) {
-            if (vote.users.some((userId: string) => userId === msg.author!.id)) {
-                deleteCommandMessages(msg, this.client);
-
-                return msg.reply('you\'ve already voted to stop the music.');
-            }
-
-            vote.count += 1;
-            vote.users.push(msg.author!.id);
-            if (vote.count >= threshold) {
-                deleteCommandMessages(msg, this.client);
-
-                return msg.reply(this.stop(msg.guild, queue));
-            }
-
-            const remaining = threshold - vote.count;
-            const time = this.setTimeout(vote);
-
-            deleteCommandMessages(msg, this.client);
-
-            return msg.say(oneLine`
-        ${vote.count} vote${vote.count > 1 ? 's' : ''} received so far,
-        ${remaining} more ${remaining > 1 ? 'are' : 'is'} needed to stop.
-        Five more seconds on the clock! The vote will end in ${time} seconds.`);
-        }
-
-        const newVote: MusicVoteType = {
-            count: 1,
-            users: [msg.author!.id],
-            queue,
-            guild: msg.guild.id,
-            start: Date.now(),
-            timeout: null,
-        };
-        const newVotesRemaining = threshold - 1;
-        const newTimeRemaining = this.setTimeout(newVote);
-
-        this.songVotes.set(msg.guild.id, newVote);
-
         deleteCommandMessages(msg, this.client);
 
-        return msg.say(oneLine`
-      Starting a votestop.
-      ${newVotesRemaining} more vote${newVotesRemaining > 1 ? 's are' : ' is'}
-      required for the music to be stopped.
-      The vote will end in ${newTimeRemaining} seconds.`);
-    }
+        queue.isTriggeredByStop = true;
+        this.queue.set(msg.guild.id, queue);
 
-    private setTimeout(vote: MusicVoteType) {
-        const time = vote.start + 15000 - Date.now() + ((vote.count - 1) * 5000);
-
-        clearTimeout(vote.timeout);
-        vote.timeout = setTimeout(() => {
-            this.songVotes.delete(vote.guild);
-            vote.queue.textChannel.send('The vote to stop the music has ended. Get outta here, party poopers.');
-        }, time);
-
-        return roundNumber(time / 1000);
+        return msg.reply(this.stop(msg.guild, queue));
     }
 
     private stop(guild: Guild, queue: MusicQueueType) {
