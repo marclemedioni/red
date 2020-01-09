@@ -46,7 +46,7 @@ export default class SkipSongCommand extends Command {
 
     private get queue() {
         if (!this.songQueue) {
-            this.songQueue = (this.client.registry.resolveCommand('music:play') as MusicCommand).queue;
+            this.songQueue = (this.client.registry.resolveCommand('music:launch') as MusicCommand).queue;
         }
 
         return this.songQueue;
@@ -54,7 +54,7 @@ export default class SkipSongCommand extends Command {
 
     private get votes() {
         if (!this.songVotes) {
-            this.songVotes = (this.client.registry.resolveCommand('music:play') as MusicCommand).votes;
+            this.songVotes = (this.client.registry.resolveCommand('music:launch') as MusicCommand).votes;
         }
 
         return this.songVotes;

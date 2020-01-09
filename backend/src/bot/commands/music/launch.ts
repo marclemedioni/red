@@ -41,10 +41,10 @@ export default class LaunchMusicCommand extends Command {
 
     public constructor(client: CommandoClient) {
         super(client, {
-            name: 'play',
-            aliases: ['add', 'enqueue', 'start', 'join', 'launch'],
+            name: 'launch',
+            aliases: ['add', 'enqueue', 'start', 'join', 'play'],
             group: 'music',
-            memberName: 'play',
+            memberName: 'launch',
             description: 'Adds a song to the queue',
             format: 'YoutubeURL|YoutubeVideoSearch',
             examples: ['play epic sax guy 10 hours'],

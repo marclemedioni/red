@@ -55,7 +55,7 @@ export default class ChangeVolumeCommand extends Command {
 
     private get queue() {
         if (!this.songQueue) {
-            this.songQueue = (this.client.registry.resolveCommand('music:play') as MusicCommand).queue;
+            this.songQueue = (this.client.registry.resolveCommand('music:launch') as MusicCommand).queue;
         }
 
         return this.songQueue;
