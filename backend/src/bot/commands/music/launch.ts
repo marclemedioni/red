@@ -393,25 +393,25 @@ export default class LaunchMusicCommand extends Command {
             return prev;
         };
         if (video) {
-            if (!this.client.isOwner(msg.author!)) {
-                const songMaxLength = msg.client.provider.get(msg.guild, 'maxLength', MAX_LENGTH);
-                const songMaxSongs = msg.client.provider.get(msg.guild, 'maxSongs', MAX_SONGS);
+    //         if (!this.client.isOwner(msg.author!)) {
+    //             const songMaxLength = msg.client.provider.get(msg.guild, 'maxLength', MAX_LENGTH);
+    //             const songMaxSongs = msg.client.provider.get(msg.guild, 'maxSongs', MAX_SONGS);
 
-                if (songMaxLength > 0 && video.durationSeconds > songMaxLength * 60) {
-                    return oneLine`
-        👎 ${Util.escapeMarkdown(video.title)}
-        (${Song.timeString(video.durationSeconds)})
-        is too long. No songs longer than ${songMaxLength} minutes!
-      `;
-                }
-                if ((queue as MusicQueueType).songs.some((songIterator: Song) => songIterator.id === video.id)) {
-                    return `👎 ${Util.escapeMarkdown(video.title)} is already queued.`;
-                }
+    //             if (songMaxLength > 0 && video.durationSeconds > songMaxLength * 60) {
+    //                 return oneLine`
+    //     👎 ${Util.escapeMarkdown(video.title)}
+    //     (${Song.timeString(video.durationSeconds)})
+    //     is too long. No songs longer than ${songMaxLength} minutes!
+    //   `;
+    //             }
+    //             if ((queue as MusicQueueType).songs.some((songIterator: Song) => songIterator.id === video.id)) {
+    //                 return `👎 ${Util.escapeMarkdown(video.title)} is already queued.`;
+    //             }
 
-                if (songMaxSongs > 0 && (queue as MusicQueueType).songs.reduce(songNumerator, 0) >= songMaxSongs) {
-                    return `👎 you already have ${songMaxSongs} songs in the queue. Don't hog all the airtime!`;
-                }
-            }
+    //             if (songMaxSongs > 0 && (queue as MusicQueueType).songs.reduce(songNumerator, 0) >= songMaxSongs) {
+    //                 return `👎 you already have ${songMaxSongs} songs in the queue. Don't hog all the airtime!`;
+    //             }
+    //         }
 
             const song = new Song(video, msg.member!);
 
