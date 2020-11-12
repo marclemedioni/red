@@ -40,7 +40,9 @@ export default class AnimesSearchCommand extends Command {
         const dispatcher = await voiceChannel.playStream(tts);
 
         dispatcher.on('end', end => { //working fine
-            msg.member.voiceChannel.leave();
+            setTimeout(() => {
+                msg.member.voiceChannel.leave();
+            }, 3000)
         });
             
         
