@@ -31,7 +31,8 @@ export default class AnimesSearchCommand extends Command {
 
     
     public async run(msg: CommandMessage, {textToSay}) {
-        if (!msg.member!.voiceChannel) return msg.reply('please join a voice channel before issuing this command.');
+        if (!msg.member!.voiceChannel) return msg.reply('Please join a voice channel before issuing this command.');
+        if (textToSay.length > 200) return msg.reply(`To long, didn't read`);
 
         const voiceChannel = await msg.member.voiceChannel.join();
 
