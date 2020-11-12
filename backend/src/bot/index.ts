@@ -65,6 +65,7 @@ client.registry
     ['moderation', 'Moderation - Who\'s your dady ?'],
     ['music', 'Music - 🎵 Let\'s dance ! 🎵'],
     ['search', 'Search - Information'],
+    ['tts', 'Text to speach - Blablablaaaaaaaaa'],
   ])
 
   // Registers all of your commands in the ./commands/ directory
