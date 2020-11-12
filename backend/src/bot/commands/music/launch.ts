@@ -218,7 +218,12 @@ export default class LaunchMusicCommand extends Command {
             if (/(?:no_video_id)/i.test(error.toString())) {
                 try {
                     const videoId = await LaunchMusicCommand.getVideoByName(videoQuery);
-                    if (!videoId) return statusMsg.edit(`${msg.author}, there were no search results.`);
+                    if (!videoId) {
+                        this.queue.delete(msg.guild.id);
+                        voiceChannel.leave();
+
+                        return statusMsg.edit(`${msg.author}, there were no search results.`);
+                    }
 
                     const video = await LaunchMusicCommand.getVideo(videoId);
                     deleteCommandMessages(msg, this.client);
