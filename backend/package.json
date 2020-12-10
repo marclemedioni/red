@@ -34,7 +34,7 @@
     "reflect-metadata": "^0.1.13",
     "socket.io": "^2.3.0",
     "ts-bus": "^2.1.0",
-    "ytdl-core": "^3.4.2"
+    "ytdl-core": "^4.1.4"
   },
   "devDependencies": {
     "@types/dotenv-safe": "^8.1.0",
