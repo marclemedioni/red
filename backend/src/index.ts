@@ -9,5 +9,5 @@ client.login(process.env.DISCORD_TOKEN)
 
 client.on('providerReady', () => {
     CAH(client);
-    new Server('7000', client)
+    new Server(process.env.RED_API_PORT, client)
 });
