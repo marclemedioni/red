@@ -178,7 +178,7 @@ export default {
       return permission(value)
     },
     getGuilds () {
-      this.axios.get('http://localhost:7000/guilds').then((response) => {
+      this.axios.get(`${process.env.API_RED_URI}/guilds`).then((response) => {
         this.guilds = response.data.guilds
       })
     },

@@ -77,7 +77,7 @@ export default {
     }
   },
   mounted () {
-    var socket = io('http://localhost:7000')
+    var socket = io(process.env.API_RED_URI)
     socket.on('toto', function (message) {
     })
   }

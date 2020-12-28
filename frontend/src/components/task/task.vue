@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     getGuilds () {
-      this.axios.get('http://localhost:7000/guilds').then((response) => {
+      this.axios.get(`${process.env.API_RED_URI}/guilds`).then((response) => {
         this.guilds = response.data.guilds
         this.channels = response.data.channels
       })
@@ -89,7 +89,7 @@ export default {
       if (selectGuild !== 'ooo') {
         if (selectChannel != null) {
           if (text !== '') {
-            this.axios.post('http://localhost:7000/message', {selectGuild, selectChannel, text}).then((response) => {
+            this.axios.post(`${process.env.API_RED_URI}/message`, {selectGuild, selectChannel, text}).then((response) => {
               this.sync = false
               this.text = ''
             })
