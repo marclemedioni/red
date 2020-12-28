@@ -95,14 +95,14 @@ export default {
   },
   methods: {
     getComands () {
-      this.axios.get('http://localhost:7000/commands').then((response) => {
+      this.axios.get(`${process.env.API_RED_URI}/commands`).then((response) => {
         this.groups = response.data.groups
         this.commands = response.data.commands
         this.prefix = response.data.prefix
       })
     },
     listen () {
-      var socket = io('http://localhost:7000')
+      var socket = io(process.env.API_RED_URI)
       socket.on('event', (data) => {
         this.notifications.push(data)
       })
