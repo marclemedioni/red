@@ -77,7 +77,7 @@ export default {
     }
   },
   mounted () {
-    var socket = io(process.env.API_RED_URI)
+    var socket = io('/api')
     socket.on('toto', function (message) {
     })
   }

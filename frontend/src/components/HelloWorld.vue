@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     getClient () {
-      this.axios.get(`${process.env.API_RED_URI}/client`).then((response) => {
+      this.axios.get(`/api/client`).then((response) => {
         this.guilds = response.data.guilds
         this.channels = response.data.channels
         this.users = response.data.users
