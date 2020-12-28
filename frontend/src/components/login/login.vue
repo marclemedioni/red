@@ -119,7 +119,7 @@ export default {
     return {
       client_id: '321367990178152485',
       client_secret: 'phYzsB2sy9RlSuhXvck3slaP0KiKtTLr',
-      redirect_uri: 'http://localhost:8080/account',
+      redirect_uri: '/api/account',
       grant_type: 'authorization_code',
       scope: 'identify guilds',
       token: Object,

@@ -45,7 +45,7 @@
                     </a>
                   </div>
                 </div>
-                <a v-if="!user" href="https://discordapp.com/api/oauth2/authorize?client_id=321367990178152485&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Faccount&response_type=code&scope=identify%20guilds" class="navbar-item">
+                <a v-if="!user" href="https://discordapp.com/api/oauth2/authorize?client_id=321367990178152485&redirect_uri=http%2api%2Faccount&response_type=code&scope=identify%20guilds" class="navbar-item">
                   Login
                 </a>
             </div>
