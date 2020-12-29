@@ -1,8 +1,9 @@
 const express = require('express')
 const bodyParser = require("body-parser");
-import {routes} from './router/routes'
-import { listenExpress} from './socket/socket'
-import {eventCommands} from './event/commands'
+import logger from 'morgan';
+import { routes } from './router/routes'
+import { listenExpress } from './socket/socket'
+import { eventCommands } from './event/commands'
 
 export class Server{
     port:Number;
@@ -15,6 +16,8 @@ export class Server{
         this.client = client
         this.app = express()
         this.router = express.Router();
+
+        this.app.use(logger('dev'));
 
         this.app.use((req, res, next)=>{
             res.header('Access-Control-Allow-Origin', '*');
