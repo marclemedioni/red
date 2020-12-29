@@ -30,6 +30,7 @@ export const eventCommands =  () => {
                                 etat:'Error' })
  })
  client.on('commandPrefixChange', (guild, prefix) => {
+     console.log('je change de prefix')
         socketServer.emit('event', {user:{
             username:'Anonymous',
             avatar: 'https://cdn.imgbin.com/7/11/4/imgbin-sticker-guy-fawkes-mask-anonymous-decal-anonymous-mask-guyfoks-mask-iqHURqGcGpvFZ6XBra9xEb5ja.jpg',

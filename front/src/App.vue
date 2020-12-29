@@ -3,7 +3,7 @@
   <div class="container">
   <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <router-link :to='{name:home}' class="navbar-item">
+          <router-link :to="{name:'home'}" class="navbar-item">
             <img src="./assets/img/discord-logo.svg" width="112" height="28">
           </router-link>
           <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -58,7 +58,26 @@
 </template>
 
 <script>
+import io from 'socket.io-client'
+import { useToast } from "vue-toastification";
 export default {
   name: 'App',
+  setup() {
+    const toast = useToast();
+    return { toast }
+  },
+  methods: {
+    listen(){
+      var socket = io('http://localhost:1234')
+      socket.on('event', function (message) {
+        this.toast.info("I'm an info tlloast!");
+        console.log(message)
+      })
+    }
+  },
+  mounted () {
+    this.listen()
+   
+  }
 }
 </script>

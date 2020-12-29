@@ -78,15 +78,19 @@ export default {
       seconds = (seconds < 10) ? '0' + seconds : seconds
       return hours + ':' + minutes + ':' + seconds
     },
-    cancelAutoUpdate () { clearInterval(this.timer) }
+    cancelAutoUpdate () { clearInterval(this.timer) },
+    getTimer(){
+      this.time = this.time + 1000
+    }
 
   },
   mounted () {
+    
     this.getClient()
     this.guilds = '-'
     this.channels = '-'
     this.users = '-'
-    this.timer = setInterval(() => this.getClient(), 1000)
+    this.timer = setInterval(() => this.getTimer(), 1000)
   },
   beforeUnmount () {
     clearInterval(this.timer)
