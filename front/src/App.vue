@@ -58,29 +58,12 @@
 </template>
 
 <script>
-import io from 'socket.io-client'
 import { useToast } from "vue-toastification";
 export default {
   name: 'App',
   setup() {
     const toast = useToast();
     return { toast }
-  },
-  methods: {
-    listen(){
-      var socket = io({
-        path: '/api/socket.io',
-        transports: ['websocket']
-      })
-      socket.on('event', function (message) {
-        this.toast.info("I'm an info tlloast!");
-        console.log(message)
-      })
-    }
-  },
-  mounted () {
-    this.listen();
-   
   }
 }
 </script>
