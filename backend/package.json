@@ -33,7 +33,7 @@
     "node-json-db": "^1.0.2",
     "node-opus": "^0.3.3",
     "reflect-metadata": "^0.1.13",
-    "socket.io": "^2.3.0",
+    "socket.io": "^3.0.4",
     "ts-bus": "^2.1.0",
     "ytdl-core": "^4.1.4"
   },
