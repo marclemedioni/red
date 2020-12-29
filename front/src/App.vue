@@ -58,12 +58,18 @@
 </template>
 
 <script>
+import { socket } from './utils/socket.ts';
 import { useToast } from "vue-toastification";
 export default {
   name: 'App',
   setup() {
     const toast = useToast();
     return { toast }
+  },
+  mounted() {
+    socket.on('event', (data) => {
+      console.log(data)
+    })
   }
 }
 </script>
