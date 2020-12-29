@@ -12,7 +12,7 @@ body{
     background-image: url('../img/red.png');
     background-repeat:no-repeat;
     background-position:center center;
-    min-height: 75%;
+    min-height: 80%;
     color: #ffffff;
     position: absolute;
     z-index: 10;
