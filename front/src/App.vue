@@ -68,7 +68,10 @@ export default {
   },
   methods: {
     listen(){
-      var socket = io('http://localhost:1234')
+      var socket = io({
+        path: '/api/socket.io',
+        transports: ['websocket']
+      })
       socket.on('event', function (message) {
         this.toast.info("I'm an info tlloast!");
         console.log(message)
@@ -76,7 +79,7 @@ export default {
     }
   },
   mounted () {
-    this.listen()
+    this.listen();
    
   }
 }
