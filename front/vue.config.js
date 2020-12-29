@@ -1,11 +1,12 @@
-module.export = {
+module.exports = {
     devServer: {
-        proxy: {
-            '^/api': {
-                target: `http://localhost:${process.env.RED_API_PORT}`,
-                ws: true,
-                pathRewrite: { '^/api': '' },
-            }
+      proxy: {
+        '^/api': {
+          target: 'http://localhost:1234',
+          ws: true,
+          changeOrigin: true,
+          pathRewrite: { '^/api': '' }
         }
+      }
     }
-}
+  }
