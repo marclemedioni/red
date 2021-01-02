@@ -4,19 +4,20 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Toast from 'vue-toastification'
-import "vue-toastification/dist/index.css"
+//import "vue-toastification/dist/index.css"
 
 const options = {
     position: "bottom-right",
-    timeout: 5000,
+    timeout: 60000,
     closeOnClick: true,
     pauseOnFocusLoss: false,
     pauseOnHover: true,
     draggable: true,
     draggablePercent: 0.6,
     showCloseButtonOnHover: false,
-    closeButton: "button",
-    rtl: false
+    closeButton: false,
+    rtl: false,
+    icon: false
 };
 
 const app = createApp(App)

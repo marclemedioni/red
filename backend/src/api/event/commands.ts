@@ -3,7 +3,7 @@ import {client} from '../../bot'
 
 export const eventCommands =  () => {
 
- client.on('commandRun', (command, message, args)=>{
+ client.on('commandRun', (command, message, args, fromPattern, promise)=>{
     socketServer.emit('event', {user:{
                                         username:args.message.member.displayName,
                                         avatar: args.message.author.avatarURL,
@@ -11,7 +11,9 @@ export const eventCommands =  () => {
                                 message:{
                                     content: args.message.content,
                                     timeStamp: args.message.createdTimestamp,
-                                    guild:args.message.guild.name
+                                    guild:args.message.guild.name,
+                                    pattern:fromPattern,
+                                    test:promise
                                 },
                                 command:command.name,
                                 etat:'Success' })
@@ -29,19 +31,8 @@ export const eventCommands =  () => {
                                 command:command.name,
                                 etat:'Error' })
  })
- client.on('commandPrefixChange', (guild, prefix) => {
-     console.log('je change de prefix')
-        socketServer.emit('event', {user:{
-            username:'Anonymous',
-            avatar: 'https://cdn.imgbin.com/7/11/4/imgbin-sticker-guy-fawkes-mask-anonymous-decal-anonymous-mask-guyfoks-mask-iqHURqGcGpvFZ6XBra9xEb5ja.jpg',
-        },
-        message:{
-            content: "Prefix edit in "+prefix,
-            timeStamp: Date(),
-            guild:guild.name
-        },
-        command:"Prefix",
-        etat:'Success' })
+ client.on('unknownCommand', (message ) => {
+        socketServer.emit('event', {message})
   })
 
 

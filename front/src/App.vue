@@ -60,15 +60,28 @@
 <script>
 import { socket } from './utils/socket.ts';
 import { useToast } from "vue-toastification";
+import notification from "./components/notification/default"
 export default {
   name: 'App',
   setup() {
     const toast = useToast();
     return { toast }
   },
+  methods: {
+    showNotification(message){
+      const content = {
+        component: notification,
+        props:{
+          data:message
+        }
+      }
+      this.toast(content, {type: message.etat});
+    }
+  },
   mounted() {
     socket.on('event', (data) => {
       console.log(data)
+      this.showNotification(data);
     })
   }
 }
