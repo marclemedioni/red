@@ -93,7 +93,7 @@ export default class EventModeratorCommand extends Command {
             .setAuthor(msg.member.displayName, msg.author.avatarURL)
             .setDescription(this.makeSortString(game))
             .addField(':bust_in_silhouette: ' +nbrPlayers ,'\u200B', true)
-            .addField(':date: '+ date+ '/2021', '\u200B', true)
+            .addField(':date: '+ date , '\u200B', true)
             .addField(':clock9: '+ heure, '\u200B', true)
             .setFooter("✅ Accepted | 🚫 Not interested | 🕒 late | ❌ refuse", '')
             .setImage(image)
