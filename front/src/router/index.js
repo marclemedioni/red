@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import home from '@/components/index'
 //import task from '@/components/task/task'
-//import listCommands from '@/components/commands/list'
+import listCommands from '@/components/commands/list'
 //import login from '@/components/login/login'
 
 const routes = [
@@ -18,7 +18,7 @@ const routes = [
     {
       path: '/commands',
       name: 'commands',
-      component: home
+      component: listCommands
     },
     {
       path: '/account',
