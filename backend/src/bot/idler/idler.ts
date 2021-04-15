@@ -1,14 +1,17 @@
 import { CommandoClient } from "discord.js-commando";
-import { TextChannel } from "discord.js";
 import Agenda from 'agenda';
-import { roundNumber } from "../components/Utils";
+import mongoose from 'mongoose';
+
+import GameModel from './models/game';
+import GameInstance from './structures/game';
+import { TextChannel } from "discord.js";
 
 const IDLE_TICK_DELAY = '5 seconds';
 
-const mongoConnectionString = 'mongodb://127.0.0.1/red';
-const agenda = new Agenda({ db: { address: mongoConnectionString } });
+const GAMES_MAP = {}
 
 export class Idler {
+    private agenda: Agenda;
     private client: CommandoClient;
 
     constructor(client: CommandoClient) {
@@ -18,28 +21,66 @@ export class Idler {
             this.start();
         });
 
+
         process.on("SIGTERM", this.graceful.bind(this));
         process.on("SIGINT", this.graceful.bind(this));
     }
 
     async start() {
-        agenda.define('gameTick', async (job) => {
-            this.client.guilds.cache.forEach(guild => {
-                const idlerChan = guild.channels.cache.find(channel => channel.name === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
-                console.log(idlerChan)
-                if (!!idlerChan) {
-                    idlerChan.send('Tick')
-                }
-            });
-        });
-        
-        await agenda.every(IDLE_TICK_DELAY, 'gameTick');
-        await agenda.start();
+        await this.connectToTheDatabase();
+        await this.initializeAgenda();
     }
+
+    async runGameTick() {
+        this.client.guilds.cache.forEach(async (guild) => {
+            const idlerChan = guild.channels.cache.find(channel => channel.name === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
+            let game = await GameModel.findOne({ guildId: guild.id }).lean();
+            if (!game) {
+                const newGame = new GameModel({
+                    guildId: guild.id
+                });
+                game = await newGame.save();
+            }
+
+            if (!GAMES_MAP[game._id]) {
+                GAMES_MAP[game._id] = new GameInstance(game._id, idlerChan);
+            }
+
+            GAMES_MAP[game._id].runTick();
+        });
+    }
+
+    private async initializeAgenda() {
+        this.agenda = new Agenda({
+          db: {
+            address: process.env.MONGO_URI as string,
+            options: { 
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+             }
+          },
+        });
+
+        this.agenda.define('gameTick', this.runGameTick.bind(this));
+
+        this.agenda.on('ready', async () => {
+            await this.agenda.every(IDLE_TICK_DELAY, 'gameTick');
+            await this.agenda.start();
+        })
+      }
+
+    private connectToTheDatabase() {
+        return mongoose.connect(process.env.MONGO_URI as string, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false
+        });
+      }
 
     private async graceful() {
         console.log('Stopping agenda...')
-        await agenda.stop();
+        await this.agenda.stop();
         process.exit(0);
       }
 }

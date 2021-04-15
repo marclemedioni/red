@@ -13,10 +13,10 @@ export const client = new commando.CommandoClient({
 
 const idler = new Idler(client);
 
-console.log(process.env.MONGO_URI)
-
 client.setProvider(
-  MongoClient.connect(process.env.MONGO_URI).then(client => new MongoDBProvider(client, process.env.MONGO_BASE))
+  MongoClient.connect(process.env.MONGO_URI as string, {
+    useUnifiedTopology: true
+  }).then(client => new MongoDBProvider(client, process.env.MONGO_BASE))
 ).catch(console.error);
 
 client
