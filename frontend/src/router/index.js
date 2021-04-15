@@ -1,14 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import home from '@/components/HelloWorld'
-import task from '@/components/task/task'
+import { createWebHistory, createRouter } from "vue-router";
+import home from '@/components/index'
+//import task from '@/components/task/task'
 import listCommands from '@/components/commands/list'
-import login from '@/components/login/login'
-Vue.use(Router)
+//import login from '@/components/login/login'
 
-export default new Router({
-  mode: 'history',
-  routes: [
+const routes = [
     {
       path: '/',
       name: 'home',
@@ -17,7 +13,7 @@ export default new Router({
     {
       path: '/task',
       name: 'task',
-      component: task
+      component: home
     },
     {
       path: '/commands',
@@ -27,7 +23,13 @@ export default new Router({
     {
       path: '/account',
       name: 'Account',
-      component: login
+      component: home
     }
-  ]
-})
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+export default router;

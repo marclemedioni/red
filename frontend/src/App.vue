@@ -3,7 +3,7 @@
   <div class="container">
   <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <router-link :to='{name:home}' class="navbar-item">
+          <router-link :to="{name:'home'}" class="navbar-item">
             <img src="./assets/img/discord-logo.svg" width="112" height="28">
           </router-link>
           <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -58,27 +58,30 @@
 </template>
 
 <script>
-import io from 'socket.io-client'
+import { socket } from './utils/socket.ts';
+import { useToast } from "vue-toastification";
+import notification from "./components/notification/default"
 export default {
   name: 'App',
-  computed: {
-    user () {
-      if (this.$store.getters.isAuthenticated) {
-        return this.$store.getters.getProfile
-      }
-    }
+  setup() {
+    const toast = useToast();
+    return { toast }
   },
   methods: {
-    logOut: function () {
-      this.$store.dispatch('authLogout')
-        .then(() => {
-          this.$router.push('/')
-        })
+    showNotification(message){
+      const content = {
+        component: notification,
+        props:{
+          data:message
+        }
+      }
+      this.toast(content, {type: message.etat});
     }
   },
-  mounted () {
-    var socket = io('/api')
-    socket.on('toto', function (message) {
+  mounted() {
+    socket.on('event', (data) => {
+      console.log(data)
+      this.showNotification(data);
     })
   }
 }
