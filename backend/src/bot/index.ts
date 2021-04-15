@@ -1,8 +1,9 @@
 import dotenvSafe from 'dotenv-safe';
 import commando from 'discord.js-commando';
 import path from 'path';
-import { NodeJsonDbProvider } from './components/SettingProvider';
-//import { Idler } from './idler/idler';
+import { Idler } from './idler/idler';
+import { MongoClient } from 'mongodb';
+import { default as MongoDBProvider } from 'commando-mongodb';
 
 dotenvSafe.config();
 
@@ -10,10 +11,12 @@ export const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(','),
 });
 
-//const idler = new Idler(client);
+const idler = new Idler(client);
+
+console.log(process.env.MONGO_URI)
 
 client.setProvider(
-  new NodeJsonDbProvider()
+  MongoClient.connect(process.env.MONGO_URI).then(client => new MongoDBProvider(client, process.env.MONGO_BASE))
 ).catch(console.error);
 
 client
@@ -21,19 +24,12 @@ client
   .on('warn', console.warn)
   .on('debug', console.log)
   .on('ready', () => {
-    console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+    console.log(`Client ready; logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`);
   })
   .on('disconnect', () => { console.warn('Disconnected!'); })
-  .on('reconnecting', () => { console.warn('Reconnecting...'); })
-  .on('commandError', (cmd, err) => {
+  .on('commandError', (cmd, err, message, args, from) => {
     if (err instanceof commando.FriendlyError) return;
     console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
-  })
-  .on('commandBlocked', (msg, reason) => {
-    console.log(`
-			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ''}
-			blocked; ${reason}
-		`);
   })
   .on('commandPrefixChange', (guild, prefix) => {
     console.log(`

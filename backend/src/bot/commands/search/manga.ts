@@ -1,7 +1,7 @@
 import { INFO_EMBED_COLOR } from '../../components/Constants';
 import { deleteCommandMessages } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
-import { RichEmbed } from 'discord.js';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
+import { Message, MessageEmbed } from 'discord.js';
 import axios from "axios";
 
 export default class MangaSearchCommand extends Command {
@@ -59,8 +59,8 @@ export default class MangaSearchCommand extends Command {
         }
 
     
-    public async run(msg: CommandMessage, {name}) {
-        const serverEmbed = new RichEmbed(); 
+    public async run(msg: CommandoMessage, {name}) {
+        const serverEmbed = new MessageEmbed(); 
         let info  = await this.getInfo(name)
         var logo = '✅';
         if(info.Media.isLicensed == false){

@@ -10,8 +10,8 @@
  */
 
 import { deleteCommandMessages, logModMessage, shouldHavePermission } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
-import { TextChannel, RichEmbed } from 'discord.js';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
+import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';
 
 interface DeleteCommandMessagesArgs {
@@ -45,21 +45,21 @@ export default class DeleteCommandMessagesCommand extends Command {
     }
 
     @shouldHavePermission('MANAGE_MESSAGES', true)
-    public async run(msg: CommandMessage, { shouldEnable }: DeleteCommandMessagesArgs) {
-        const dcmEmbed = new RichEmbed();
-        const modlogChannel = msg.client.provider.get(msg.guild, 'modlogchannel', null);
+    public async run(msg: CommandoMessage, { shouldEnable }: DeleteCommandMessagesArgs) {
+        const dcmEmbed = new MessageEmbed();
+        const modlogChannel = (msg.client as CommandoClient).provider.get(msg.guild, 'modlogchannel', null);
 
-        msg.client.provider.set(msg.guild, 'deletecommandmessages', shouldEnable);
+        (msg.client as CommandoClient).provider.set(msg.guild, 'deletecommandmessages', shouldEnable);
 
         dcmEmbed
             .setColor('#3DFFE5')
-            .setAuthor(msg.author!.tag, msg.author!.displayAvatarURL)
+            .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
             .setDescription(oneLine`**Action:** Deleting of command messages is now ${shouldEnable ? 'enabled' : 'disabled'}`)
             .setTimestamp();
 
-        if (msg.client.provider.get(msg.guild, 'modlogs', true)) {
+        if ((msg.client as CommandoClient).provider.get(msg.guild, 'modlogs', true)) {
             logModMessage(
-                msg, msg.client, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, dcmEmbed
+                msg, (msg.client as CommandoClient), modlogChannel, msg.guild.channels.cache.get(modlogChannel) as TextChannel, dcmEmbed
             );
         }
 

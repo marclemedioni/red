@@ -1,8 +1,9 @@
 import { CommandoClient } from "discord.js-commando";
 import { TextChannel } from "discord.js";
 import Agenda from 'agenda';
+import { roundNumber } from "../components/Utils";
 
-const IDLE_TICK_DELAY = '10 seconds';
+const IDLE_TICK_DELAY = '5 seconds';
 
 const mongoConnectionString = 'mongodb://127.0.0.1/red';
 const agenda = new Agenda({ db: { address: mongoConnectionString } });
@@ -13,27 +14,32 @@ export class Idler {
     constructor(client: CommandoClient) {
         this.client = client;
 
-        client.on('ready', () => {
-            client.guilds.forEach(guild => {
-                console.log(guild.id)
-            });
-
+        client.on('providerReady', () => {
             this.start();
         });
 
-        agenda.define('gameTick', async job => {
-            // this.client.guilds.forEach(guild => {
-            //     const idlerChan = guild.channels.get(this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
-            //     if (!!idlerChan) {
-            //         idlerChan.send(' Tick')
-            //     }
-            // });
-        });
+        process.on("SIGTERM", this.graceful.bind(this));
+        process.on("SIGINT", this.graceful.bind(this));
     }
 
     async start() {
-        await agenda.start();
-
+        agenda.define('gameTick', async (job) => {
+            this.client.guilds.cache.forEach(guild => {
+                const idlerChan = guild.channels.cache.find(channel => channel.name === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
+                console.log(idlerChan)
+                if (!!idlerChan) {
+                    idlerChan.send('Tick')
+                }
+            });
+        });
+        
         await agenda.every(IDLE_TICK_DELAY, 'gameTick');
+        await agenda.start();
     }
+
+    private async graceful() {
+        console.log('Stopping agenda...')
+        await agenda.stop();
+        process.exit(0);
+      }
 }

@@ -1,10 +1,11 @@
-import { CommandoClient, CommandMessage, util as CommandoUtil } from 'discord.js-commando';
-import { TextChannel, RichEmbed, PermissionString, Util, GuildMember, StreamDispatcher } from 'discord.js';
+// @ts-nocheck
+import { CommandoClient, CommandoMessage, util as CommandoUtil } from 'discord.js-commando';
+import { TextChannel, MessageEmbed, PermissionString, Util, GuildMember, StreamDispatcher } from 'discord.js';
 import { oneLineTrim } from 'common-tags';
 import { YoutubeVideoType } from 'RedTypes';
 
 /** Helper function to delete command messages */
-export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClient) => {
+export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
     if (msg.deletable && client.provider.get(msg.guild, 'deletecommandmessages', false)) {
         msg.delete()
     };
@@ -12,7 +13,7 @@ export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClien
 
 /** Helper function to log moderation commands */
 export const logModMessage = async (
-    msg: CommandMessage, client: CommandoClient, outChannelID: string, outChannel: TextChannel, embed: RichEmbed
+    msg: CommandoMessage, client: CommandoClient, outChannelID: string, outChannel: TextChannel, embed: MessageEmbed
 ) => {
     if (!client.provider.get(msg.guild, 'hasSentModLogMessage', false)) {
         msg.reply(`
@@ -32,13 +33,13 @@ export const shouldHavePermission = (permission: PermissionString, shouldClientH
     return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
         const fn: (...args: unknown[]) => unknown = descriptor.value;
 
-        descriptor.value = async function value(msg: CommandMessage, args: object, fromPattern: boolean) {
-            const authorIsOwner = msg.client.isOwner(msg.author!);
+        descriptor.value = async function value(msg: CommandoMessage, args: object, fromPattern: boolean) {
+            const authorIsOwner = (msg.client as CommandoClient).isOwner(msg.author!);
             const memberHasPermission = msg.member!.hasPermission(permission);
 
             if (!memberHasPermission && !authorIsOwner) {
                 return onBlock(msg, 'permission',
-                    { response: `You need the "${CommandoUtil.permissions[permission]}" permission to use the ${msg.command.name} command` });
+                    { response: `You need the "${CommandoUtil.permissions[permission]}" permission to use the ${msg.command?.name} command` });
             }
 
             if (shouldClientHavePermission) {
@@ -56,7 +57,7 @@ export const shouldHavePermission = (permission: PermissionString, shouldClientH
     };
 };
 
-export const onBlock = (message, reason, data) => {
+export const onBlock = (message, reason, data) => {    
     switch (reason) {
         case 'guildOnly':
             return message.reply(`The \`${this.name}\` command must be used in a server channel.`);

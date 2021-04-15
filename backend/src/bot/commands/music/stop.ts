@@ -12,7 +12,7 @@
  */
 
 import { deleteCommandMessages, roundNumber } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { Snowflake, Guild } from 'discord.js';
 import { oneLine } from 'common-tags';
 import { MusicCommand, MusicQueueType, MusicVoteType } from 'RedTypes';
@@ -58,7 +58,7 @@ export default class StopMusicCommand extends Command {
         return this.songVotes;
     }
 
-    public async run(msg: CommandMessage, args: string) {
+    public async run(msg: CommandoMessage, args: string) {
         const queue = this.queue.get(msg.guild.id);
 
         if (!queue) return msg.reply('there isn\'t any music playing right now.');

@@ -10,7 +10,7 @@
  */
 
 import { deleteCommandMessages } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { Snowflake } from 'discord.js';
 import { MusicCommand, MusicQueueType } from 'RedTypes';
 
@@ -42,7 +42,7 @@ export default class PauseSongCommand extends Command {
         return this.songQueue;
     }
 
-    public async run(msg: CommandMessage) {
+    public async run(msg: CommandoMessage) {
         const queue = this.queue.get(msg.guild.id);
 
         if (!queue) {

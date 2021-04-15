@@ -17,7 +17,7 @@
  */
 
 import { deleteCommandMessages, roundNumber } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { Guild, Snowflake } from 'discord.js';
 import { MusicCommand, MusicQueueType, MusicVoteType } from 'RedTypes';
 
@@ -60,7 +60,7 @@ export default class SkipSongCommand extends Command {
         return this.songVotes;
     }
 
-    public async run(msg: CommandMessage, args: string) {
+    public async run(msg: CommandoMessage, args: string) {
         const queue = this.queue.get(msg.guild.id);
         if (!queue) return msg.reply('there isn\'t a song playing right now, silly.');
         if (!queue.voiceChannel.members.has(msg.author!.id)) return msg.reply('you\'re not in the voice channel. You better not be trying to mess with their mojo, man.');

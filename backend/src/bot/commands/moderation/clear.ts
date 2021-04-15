@@ -1,4 +1,4 @@
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 
 export default class ClearModeratorCommand extends Command {
     public constructor(client: CommandoClient) {
@@ -25,14 +25,16 @@ export default class ClearModeratorCommand extends Command {
     }
 
 
-    public async run(msg: CommandMessage, { data }) {
+    public async run(msg: CommandoMessage, { data }) {
         var msgDelete;
         var s = '';
-        var mention = msg.mentions.members.first();
-        var user = msg.guild.members.find('displayName', data)
+        var mention = msg.mentions.members?.first();
+        var user = await (await msg.guild.members.fetch({ query: data, limit: 1 })).first();
         if(!isNaN(data)){
-            msg.channel.bulkDelete(data);
-            msgDelete = data;
+            if (msg.channel.type === 'text') {
+                msg.channel.bulkDelete(data);
+                msgDelete = data;
+            }
         }else{
             if(user != null){
                 msgDelete = await this.supMessage(msg, user.id)

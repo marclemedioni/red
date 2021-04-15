@@ -19,7 +19,7 @@
 
 import { DEFAULT_VOLUME, MAX_LENGTH, MAX_SONGS } from '../../components/Constants';
 import { deleteCommandMessages, Song } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import {
     Guild, Message, Snowflake, StreamDispatcher,
     StreamOptions, TextChannel, Util, VoiceChannel, VoiceConnection
@@ -123,15 +123,15 @@ export default class LaunchMusicCommand extends Command {
     }
 
     private static async startTheJam(connection: VoiceConnection, url: string, ytdlOptions?: any, streamOptions?: StreamOptions) {
-        return connection.playStream(ytdl(url, { filter: 'audioonly' }), { bitrate: 4000 });
+        return connection.play(ytdl(url, { filter: 'audioonly' }), { bitrate: 4000 });
     }
 
-    public async run(msg: CommandMessage, { videoQuery }: LaunchMusicArgs) {
+    public async run(msg: CommandoMessage, { videoQuery }: LaunchMusicArgs) {
         const queue = this.queue.get(msg.guild.id);
 
-        if (!msg.member!.voiceChannel) return msg.reply('please join a voice channel before issuing this command.');
+        if (!msg.member?.voice.channel) return msg.reply('please join a voice channel before issuing this command.');
 
-        const voiceChannel: VoiceChannel = msg.member!.voiceChannel;
+        const voiceChannel: VoiceChannel = msg.member!.voice.channel;
         const statusMsg: Message = await msg.reply('obtaining video details...') as Message;
 
         if (!queue) {
@@ -158,7 +158,7 @@ export default class LaunchMusicCommand extends Command {
                 voiceChannel,
                 connection: null,
                 songs: [],
-                volume: msg.client.provider.get(msg.guild, 'defaultVolume', DEFAULT_VOLUME),
+                volume: (msg.client as CommandoClient).provider.get(msg.guild, 'defaultVolume', DEFAULT_VOLUME),
                 playing: false,
             };
 
@@ -246,7 +246,7 @@ export default class LaunchMusicCommand extends Command {
 
     private async handleVideo(
         video: YoutubeVideoType, queue: MusicQueueType, voiceChannel: VoiceChannel,
-        msg: CommandMessage, statusMsg: Message
+        msg: CommandoMessage, statusMsg: Message
     ): Promise<null> {
         if (!video || !video.durationSeconds || video.durationSeconds === 0) {
             statusMsg.edit(oneLine`${msg.author}, you can't play live streams`);
@@ -260,7 +260,7 @@ export default class LaunchMusicCommand extends Command {
                 voiceChannel,
                 connection: null,
                 songs: [],
-                volume: msg.client.provider.get(msg.guild, 'defaultVolume', DEFAULT_VOLUME),
+                volume: (msg.client as CommandoClient).provider.get(msg.guild, 'defaultVolume', DEFAULT_VOLUME),
                 playing: false,
             };
             this.queue.set(msg.guild.id, queue);
@@ -275,7 +275,7 @@ export default class LaunchMusicCommand extends Command {
 
             const resultMessage = {
                 author: {
-                    iconURL: msg.author!.displayAvatarURL,
+                    iconURL: msg.author.displayAvatarURL(),
                     name: `${msg.author!.tag} (${msg.author!.id})`,
                 },
                 color: 3447003,
@@ -302,7 +302,7 @@ export default class LaunchMusicCommand extends Command {
                     `
             ${msg.author}, something went wrong playing music.
             Please contact <@${this.client.owners[0].id}> as there is likely something wrong in the code!
-            Use \`${msg.client.commandPrefix}invite\` to get an invite to the support server.
+            Use \`${(msg.client as CommandoClient).commandPrefix}invite\` to get an invite to the support server.
           `
                 ));
 
@@ -319,7 +319,7 @@ export default class LaunchMusicCommand extends Command {
 
             const resultMessage = {
                 author: {
-                    iconURL: msg.author!.displayAvatarURL,
+                    iconURL: msg.author!.displayAvatarURL(),
                     name: `${msg.author!.tag} (${msg.author!.id})`,
                 },
                 color: 3447003,
@@ -333,7 +333,7 @@ export default class LaunchMusicCommand extends Command {
     }
 
     private async handlePlaylist(video: YoutubeVideoType, playlistId: string,
-        msg: CommandMessage, statusMsg: Message): Promise<null> {
+        msg: CommandoMessage, statusMsg: Message): Promise<null> {
         if (!video || !video.durationSeconds || video.durationSeconds === 0) {
             statusMsg.edit(oneLine`${msg.author}, I can't play live streams or private videos.`);
 
@@ -345,8 +345,8 @@ export default class LaunchMusicCommand extends Command {
         if (result) {
             const resultMessage = {
                 author: {
-                    iconURL: msg.author!.displayAvatarURL,
-                    name: `${msg.author!.tag} (${msg.author!.id})`,
+                    iconURL: msg.author.displayAvatarURL(),
+                    name: `${msg.author.tag} (${msg.author.id})`,
                 },
                 color: 3447003,
                 description: result,
@@ -364,13 +364,13 @@ export default class LaunchMusicCommand extends Command {
                     description: stripIndents(
                         `
               Adding [the playlist](https://www.youtube.com/playlist?list=${playlistId}) to the queue!
-              Check what's been added with: \`${msg.client.commandPrefix}queue\`!
+              Check what's been added with: \`${(msg.client as CommandoClient).commandPrefix}queue\`!
             `
                     ),
                     color: 3447003,
                     author: {
                         name: `${msg.author!.tag} (${msg.author!.id})`,
-                        icon_url: msg.author!.displayAvatarURL,
+                        icon_url: msg.author!.displayAvatarURL(),
                     },
                 },
             });
@@ -388,7 +388,7 @@ export default class LaunchMusicCommand extends Command {
         return null;
     }
 
-    private addSong(msg: CommandMessage, video: YoutubeVideoType) {
+    private addSong(msg: CommandoMessage, video: YoutubeVideoType) {
         const queue = this.queue.get(msg.guild.id);
         const songNumerator = (prev: number, curSong: Song) => {
             if (curSong.member.id === msg.author!.id) {

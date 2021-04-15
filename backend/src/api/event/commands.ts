@@ -3,30 +3,30 @@ import {client} from '../../bot'
 
 export const eventCommands =  () => {
 
- client.on('commandRun', (command, message, args, fromPattern, promise)=>{
+ client.on('commandRun', (command, _message, args, fromPattern, promise)=>{
     socketServer.emit('event', {user:{
-                                        username:args.message.member.displayName,
-                                        avatar: args.message.author.avatarURL,
+                                        username: args.member?.displayName,
+                                        avatar: args.author.avatarURL,
                                     },
                                 message:{
-                                    content: args.message.content,
-                                    timeStamp: args.message.createdTimestamp,
-                                    guild:args.message.guild.name,
+                                    content: args.content,
+                                    timeStamp: args.createdTimestamp,
+                                    guild:args.guild.name,
                                     pattern:fromPattern,
                                     test:promise
                                 },
                                 command:command.name,
                                 etat:'Success' })
  })
- client.on('commandError', (command, message, args)=>{
+ client.on('commandError', (command, _error, message, args, _from) => {
     socketServer.emit('event', {user:{
-                                        username:args.message.member.displayName,
-                                        avatar: args.message.author.avatarURL,
+                                        username: message.member?.displayName,
+                                        avatar: message.author.avatarURL,
                                     },
                                 message:{
-                                    content: args.message.content,
-                                    timeStamp: args.message.createdTimestamp,
-                                    guild:args.message.guild.name
+                                    content: message.content,
+                                    timeStamp: message.createdTimestamp,
+                                    guild: message.guild.name
                                 },
                                 command:command.name,
                                 etat:'Error' })

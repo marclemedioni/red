@@ -1,7 +1,7 @@
 import { DEFAULT_EMBED_COLOR } from '../../components/Constants';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { deleteCommandMessages, shouldHavePermission } from '../../components/Utils';
-import { RichEmbed, TextChannel } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import Axios from 'axios';
 
 export default class EventModeratorCommand extends Command {
@@ -25,15 +25,17 @@ export default class EventModeratorCommand extends Command {
         });
     }
 
-    private async verif(msg: CommandMessage) {
-        const category = msg.guild.channels.find(c => c.name == 'Calendar' && c.type == 'category');
+    private async verif(msg: CommandoMessage) {
+        const category = msg.guild.channels.cache.find(c => c.name == 'Calendar' && c.type == 'category');
         if (category == null) {
            const category = await (await this.createChan(msg, 'category', 'Calendar'))
            const channel = await (await this.createChan(msg, 'text', 'event')).setParent(category.id)
         }
 
-        const channel = msg.guild.channels.find('name', 'event');
-        if (channel == null) {
+        const channel = msg.guild.channels.cache.find((channel => {
+            return channel.name === 'event'
+        }));
+        if (channel == null && category) {
             const channel = await (await this.createChan(msg, 'text', 'event')).setParent(category.id)
         }
         return channel;
@@ -46,8 +48,8 @@ export default class EventModeratorCommand extends Command {
         var regex = RegExp('^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$');
         return regex.test(hour)
     }
-    private createChan(msg: CommandMessage, type, Name) {
-        var channel = msg.guild.createChannel( Name, { type: type })
+    private createChan(msg: CommandoMessage, type, name) {
+        var channel = msg.guild.channels.create(name, { type })
         return channel;
     }
     private makeSortString (s) {
@@ -81,16 +83,19 @@ export default class EventModeratorCommand extends Command {
 
     @shouldHavePermission('MANAGE_MESSAGES', true)
 
-    public async run(msg: CommandMessage, { date, heure, game }) {
+    public async run(msg: CommandoMessage, { date, heure, game }) {
         const channel = await this.verif(msg);
-        const chan = msg.guild.channels.get(channel.id) as TextChannel;
-        const serverEmbed = new RichEmbed();
+        if (!channel) {
+            return msg.channel.send('Unable to determine channel to create');
+        }
+        const chan = msg.guild.channels.cache.get(channel.id) as TextChannel;
+        const serverEmbed = new MessageEmbed();
         let nbrPlayers = 0
         let players = new Array()
         let image = await this.getImage(game)
         serverEmbed
             .setColor(DEFAULT_EMBED_COLOR)
-            .setAuthor(msg.member.displayName, msg.author.avatarURL)
+            .setAuthor(msg.member?.displayName, msg.author.avatarURL() || '')
             .setDescription(this.makeSortString(game))
             .addField(':bust_in_silhouette: ' +nbrPlayers ,'\u200B', true)
             .addField(':date: '+ date , '\u200B', true)
@@ -98,7 +103,7 @@ export default class EventModeratorCommand extends Command {
             .setFooter("✅ Accepted | 🚫 Not interested | 🕒 late | ❌ refuse", '')
             .setImage(image)
             .setTimestamp()
-        var message = await chan!.sendEmbed(serverEmbed)
+        var message = await chan.send(serverEmbed)
         await message.react('✅')
         await message.react('🚫')
         await message.react('🕒')
@@ -106,7 +111,7 @@ export default class EventModeratorCommand extends Command {
         
         const collector = message.createReactionCollector((r, user) =>['✅','🚫','🕒','❌'].includes(r.emoji.name) && user.id !== message.author.id, {})
         collector.on('collect', r => {
-            let user = r.users.last()
+            let user = r.users.cache.last()
             let player = players.map((e)=>{return e.user}).indexOf(user?.username)
             if(r.emoji.name === '✅' || r.emoji.name === '🕒'){
                 if(player === -1){
@@ -133,12 +138,12 @@ export default class EventModeratorCommand extends Command {
                 players[player].etat = r.emoji.name
                 if(serverEmbed.fields) serverEmbed.fields[players[player].colums].name = r.emoji.name+' '+user?.username
             }
-            message.reactions.get(r.emoji.name)?.remove(user)
+            message.reactions.cache.get(r.emoji.name)?.remove()
             if(serverEmbed.fields) serverEmbed.fields[0].name = ':bust_in_silhouette: ' +nbrPlayers;
             message.edit(serverEmbed)
         });
            
-        collector.on('end', collected =>  message.clearReactions());
+        collector.on('end', collected => message.reactions.removeAll());
         deleteCommandMessages(msg, this.client);
         
         return msg.channel.send("✅  Event has been Added");;

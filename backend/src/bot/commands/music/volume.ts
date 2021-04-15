@@ -13,7 +13,7 @@
  */
 
 import { deleteCommandMessages } from '../../components/Utils';
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
+import { Command, CommandoClient, CommandoMessage } from 'discord.js-commando';
 
 import { MusicCommand, MusicQueueType } from 'RedTypes';
 
@@ -61,7 +61,7 @@ export default class ChangeVolumeCommand extends Command {
         return this.songQueue;
     }
 
-    public async run(msg: CommandMessage, { volume }: ChangeVolumeArgs) {
+    public async run(msg: CommandoMessage, { volume }: ChangeVolumeArgs) {
         const queue = this.queue.get(msg.guild.id);
 
         if (!queue) return msg.reply('there isn\'t any music playing to change the volume of. Better queue some up!');
