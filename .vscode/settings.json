@@ -2,5 +2,6 @@
     "jest.rootPath": "backend",
     "jest.showCoverageOnLoad": true,
     "jest.pathToJest": "npm run test:watch --",
-    "jest.runAllTestsFirst": false
+    "jest.runAllTestsFirst": false,
+    "git.ignoreLimitWarning": true
 }
