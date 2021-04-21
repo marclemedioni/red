@@ -33,20 +33,31 @@ export class Idler {
 
     async runGameTick() {
         this.client.guilds.cache.forEach(async (guild) => {
-            const idlerChan = guild.channels.cache.find(channel => channel.name === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
-            let game = await GameModel.findOne({ guildId: guild.id }).lean();
-            if (!game) {
-                const newGame = new GameModel({
-                    guildId: guild.id
-                });
-                game = await newGame.save();
+            //const idlerChan = guild.channels.cache.find(channel => channel.name === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
+            let idlerChan = await this.client.provider.get(guild, 'idlerchannel', null);
+            if(idlerChan === null){
+                idlerChan = guild.channels.cache.find(channel => channel.name === "idle") as TextChannel;
+                if(idlerChan as TextChannel){
+                    this.client.provider.set(guild.id, "idlerchannel", idlerChan.id)
+                }
+            }else{
+                idlerChan = guild.channels.cache.find(channel => channel.id === this.client.provider.get(guild, 'idlerchannel', null)) as TextChannel;
             }
+            if(idlerChan as TextChannel){
+                let game = await GameModel.findOne({ guildId: guild.id }).lean();
+                if (!game) {
+                    const newGame = new GameModel({
+                        guildId: guild.id
+                    });
+                    game = await newGame.save();
+                }
 
-            if (!GAMES_MAP[game._id]) {
-                GAMES_MAP[game._id] = new GameInstance(game._id, idlerChan);
+                if (!GAMES_MAP[game._id]) {
+                    GAMES_MAP[game._id] = new GameInstance(game._id, idlerChan);
+                }
+
+                GAMES_MAP[game._id].runTick();
             }
-
-            GAMES_MAP[game._id].runTick();
         });
     }
 
