@@ -57,14 +57,14 @@ export class Idler {
     if (!botGuildMember?.permissions.has('MANAGE_CHANNELS')) {
       return;
     }
-    const hasCategoryChannel = await guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idle');
-    const hasCommandsChannel = await guild.channels.cache.find(channel => channel.name === 'commands' && channel.type === 'text' && channel.parent?.name === 'Idle');
-    const hasLogsChannel = await guild.channels.cache.find(channel => channel.name === 'logs' && channel.type === 'text' && channel.parent?.name === 'Idle');
+    const hasCategoryChannel = await guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idler');
+    const hasCommandsChannel = await guild.channels.cache.find(channel => channel.name === 'commands' && channel.type === 'text' && channel.parent?.name === 'Idler');
+    const hasLogsChannel = await guild.channels.cache.find(channel => channel.name === 'logs' && channel.type === 'text' && channel.parent?.name === 'Idler');
 
     if (!hasCategoryChannel) {
       console.log(`Creating Idle Category Channel for Guild: ${guild.name}`);
       try {
-        await guild.channels.create('Idle', { type: 'category' });
+        await guild.channels.create('Idler', { type: 'category' });
       } catch (err) {
         console.log(err);
       }
@@ -73,7 +73,7 @@ export class Idler {
       console.log(`Creating Idle Commands Channel for Guild: ${guild.name}`);
       try {
         const commandsChannel = await guild.channels.create('commands');
-        await commandsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idle'));
+        await commandsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idler'));
       } catch (err) {
         console.log(err);
       }
@@ -82,7 +82,7 @@ export class Idler {
       console.log(`Creating Idle Logs Channel for Guild: ${guild.name}`);
       try {
         const logsChannel = await guild.channels.create('logs');
-        await logsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idle'));
+        await logsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idler'));
       } catch (err) {
         console.log(err);
       }
