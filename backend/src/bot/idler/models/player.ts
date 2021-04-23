@@ -15,20 +15,20 @@ export interface IPlayerModel extends Model<IPlayerDocument> {
 const PlayerSchema = new Schema({
   discordId: {
     type: String,
-    index: {
-      unique: true,
-      dropDups: true
-    }
+    required: true,
   },
   guildId: {
     type: String,
-    default: 'None'
+    required: true,
   },
-  name: String
+  name: {
+    type: String,
+    required: true,
+  },
 }, {
   timestamps: {
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
   }
 });
 
