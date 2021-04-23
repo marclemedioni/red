@@ -1,9 +1,15 @@
-import mongoose from 'mongoose';
+import { Document, Schema, model, Model } from 'mongoose';
 
-const GameSchema = new mongoose.Schema({
-    guildId: {type: String, required: true, unique: true, index: true}
+export interface IGameDocument extends Document {
+  guildId: string
+}
+
+export interface IGameModel extends Model<IGameDocument> {
+
+}
+
+const GameSchema = new Schema({
+  guildId: { type: String, required: true, unique: true, index: true }
 });
 
-let GameModel = mongoose.model('Game', GameSchema);
-
-export default GameModel;
+export default model<IGameDocument, IGameModel>('Game', GameSchema);
