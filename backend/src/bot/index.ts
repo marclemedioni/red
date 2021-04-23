@@ -11,8 +11,6 @@ export const client = new commando.CommandoClient({
   owner: process.env!.ownerId!.split(','),
 });
 
-const idler = new Idler(client);
-
 client.setProvider(
   MongoClient.connect(process.env.MONGO_URI as string, {
     useUnifiedTopology: true
@@ -25,6 +23,7 @@ client
   .on('debug', console.log)
   .on('ready', () => {
     console.log(`Client ready; logged in as ${client.user?.username}#${client.user?.discriminator} (${client.user?.id})`);
+    const idler = new Idler(client);
   })
   .on('disconnect', () => { console.warn('Disconnected!'); })
   .on('commandError', (cmd, err, message, args, from) => {

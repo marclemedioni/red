@@ -1,15 +1,13 @@
 import { TextChannel } from "discord.js";
 
 export default class Game {
-    private id: string;
-    private idleChannel: TextChannel;
+  private id: string;
 
-    constructor(gameId: string, idleChannel: TextChannel) {
-        this.id = gameId;
-        this.idleChannel = idleChannel
-    }
+  constructor(gameId: string) {
+    this.id = gameId;
+  }
 
-    runTick() {
-        this.idleChannel.send('tick')
-    }
+  runTick() {
+    console.log('tick')
+  }
 }
