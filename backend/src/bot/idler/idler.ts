@@ -4,10 +4,8 @@ import mongoose from 'mongoose';
 
 import GameModel from './models/game';
 import GameInstance from './structures/game';
-import { Guild, TextChannel } from "discord.js";
 
 const IDLE_TICK_DELAY = '5 seconds';
-
 const GAMES_MAP = {}
 
 export class Idler {
@@ -38,14 +36,13 @@ export class Idler {
     this.client.guilds.cache.forEach(async (guild) => {
       let game = await GameModel.findOne({ guildId: guild.id }).lean();
       if (!game) {
-        const newGame = new GameModel({
+        game = await GameModel.create({
           guildId: guild.id
         });
-        game = await newGame.save();
       }
 
       if (!GAMES_MAP[game._id]) {
-        GAMES_MAP[game._id] = new GameInstance(game._id);
+        GAMES_MAP[game._id] = new GameInstance(game.guildId);
       }
 
       GAMES_MAP[game._id].runTick();

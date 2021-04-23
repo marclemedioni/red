@@ -61,7 +61,9 @@ client.registry
     ['music', 'Music - 🎵 Let\'s dance ! 🎵'],
     ['search', 'Search - Information'],
     ['tts', 'Text to speach - Blablablaaaaaaaaa'],
+    ['idler', 'Le meilleur jeu du monde'],
   ])
 
   // Registers all of your commands in the ./commands/ directory
-  .registerCommandsIn(path.join(__dirname, 'commands'));
+  .registerCommandsIn(path.join(__dirname, 'commands'))
+  .registerCommandsIn(path.join(__dirname, '/idler/commands'))
