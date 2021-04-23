@@ -62,7 +62,7 @@ export class Idler {
     const hasLogsChannel = await guild.channels.cache.find(channel => channel.name === 'logs' && channel.type === 'text' && channel.parent?.name === 'Idler');
 
     if (!hasCategoryChannel) {
-      console.log(`Creating Idle Category Channel for Guild: ${guild.name}`);
+      console.log(`Creating Idler Category Channel for Guild: ${guild.name}`);
       try {
         await guild.channels.create('Idler', { type: 'category' });
       } catch (err) {
@@ -70,7 +70,7 @@ export class Idler {
       }
     }
     if (!hasCommandsChannel) {
-      console.log(`Creating Idle Commands Channel for Guild: ${guild.name}`);
+      console.log(`Creating Idler Commands Channel for Guild: ${guild.name}`);
       try {
         const commandsChannel = await guild.channels.create('commands');
         await commandsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idler'));
@@ -79,7 +79,7 @@ export class Idler {
       }
     }
     if (!hasLogsChannel) {
-      console.log(`Creating Idle Logs Channel for Guild: ${guild.name}`);
+      console.log(`Creating Idler Logs Channel for Guild: ${guild.name}`);
       try {
         const logsChannel = await guild.channels.create('logs');
         await logsChannel.setParent(guild.channels.cache.find(channel => channel.type === 'category' && channel.name === 'Idler'));
